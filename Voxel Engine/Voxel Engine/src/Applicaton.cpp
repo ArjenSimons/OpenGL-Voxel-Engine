@@ -1,34 +1,10 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include "Window.h"
 #include <iostream>
 
 int main(void)
 {
-	GLFWwindow* window;
-
-	/* Initialize the library */
-	if (!glfwInit())
-		return -1;
-
-	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(1280, 720, "Voxel Engine", NULL, NULL);
-	if (!window)
-	{
-		glfwTerminate();
-		return -1;
-	}
-
-	/* Make the window's context current */
-	glfwMakeContextCurrent(window);
-
-	GLenum err = glewInit();
-	if (err != GLEW_OK)
-		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
-
-	std::cout << glGetString(GL_VERSION) << std::endl;
-
-	/* Loop until the user closes the window */
-	while (!glfwWindowShouldClose(window))
+	Window window = Window::Window(WindowProps());
+	while (window.IsRunning())
 	{
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -39,13 +15,7 @@ int main(void)
 		glVertex2f(0.5f, -0.5f);
 		glEnd();
 
-
-
-		/* Swap front and back buffers */
-		glfwSwapBuffers(window);
-
-		/* Poll for and process events */
-		glfwPollEvents();
+		window.OnUpdate();
 	}
 
 	glfwTerminate();
