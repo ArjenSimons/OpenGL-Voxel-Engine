@@ -18,6 +18,7 @@ int main(void)
 		window.OnUpdate();
 	}
 
-	glfwTerminate();
+	window.Shutdown();
+
 	return 0;
 }

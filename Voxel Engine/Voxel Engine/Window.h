@@ -26,7 +26,6 @@ public:
 	unsigned int GetHeight() { return data.Height; }
 
 	GLFWwindow* GetWindow() { return window; }
-private:
 	void Shutdown();
 private:
 	GLFWwindow* window;
