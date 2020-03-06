@@ -19,7 +19,7 @@ Window::Window(const WindowProps& props)
 	if (!window)
 	{
 		std::cout << "Error initializeng window and OpenGL context" << std::endl;
-		Shutdown();
+		exit(EXIT_FAILURE);
 	}
 
 	glfwMakeContextCurrent(window);
@@ -28,7 +28,6 @@ Window::Window(const WindowProps& props)
 	if (err != GLEW_OK)
 	{
 		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
-		Shutdown();
 		exit(EXIT_FAILURE);
 	}
 
