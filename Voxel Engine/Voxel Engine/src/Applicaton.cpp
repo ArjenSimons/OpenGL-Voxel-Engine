@@ -54,7 +54,7 @@ static unsigned int CompileShader(unsigned int type, const std::string& source)
 		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
 		char* message = (char*)alloca(length * sizeof(char));
 		glGetShaderInfoLog(id, length, &length, message);
-		std::cout << (type == GL_VERTEX_SHADER ? "Vertex" : "Fragment") <<"shader compilation ERROR!" << std::endl;	
+		std::cout << "\n" << (type == GL_VERTEX_SHADER ? "Vertex" : "Fragment") <<"shader compilation ERROR!" << std::endl;	
 		std::cout << message << std::endl;
 
 		glDeleteShader(id);
