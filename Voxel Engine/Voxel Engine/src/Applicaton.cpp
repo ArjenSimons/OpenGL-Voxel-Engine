@@ -85,23 +85,32 @@ int main(void)
 {
 	Window window = Window::Window(WindowProps());
 
-	float positions[12]{
+	float positions[8]{
 		-0.5f, -0.5,
-		 0.5f, -0.5f,
-		-0.5f,  0.5f,
-
 		 0.5f, -0.5f,
 		 0.5f,  0.5f,
 		-0.5f,  0.5f
 	};
 
-	unsigned int buffer;
-	glGenBuffers(1, &buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
+	unsigned int indices[6]{
+		0, 1, 2,
+		0, 2, 3
+	};
+
+	//Vertex buffer object
+	unsigned int vbo;
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), positions, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+
+	//Index buffer object
+	unsigned int ibo;
+	glGenBuffers(1, &ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
 	ShaderProgramSource source = ParseShader("res/shaders/Basic.shader");
 
@@ -114,7 +123,7 @@ int main(void)
 		/*Render*/
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 		window.OnUpdate();	
 	}
 
