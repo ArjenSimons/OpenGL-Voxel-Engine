@@ -1,6 +1,7 @@
 #include <GL/glew.h>
 #include "Window.h"
 #include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 #include <iostream>
 #include <fstream>
@@ -99,16 +100,11 @@ int main(void)
 	};
 
 	VertexBuffer vbo = VertexBuffer(positions, 8 * sizeof(float));
-	vbo.Bind();
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
 
-	//Index buffer object
-	unsigned int ibo;
-	glGenBuffers(1, &ibo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+	IndexBuffer ibo = IndexBuffer(indices, 6);
 
 	ShaderProgramSource source = ParseShader("res/shaders/Basic.shader");
 
