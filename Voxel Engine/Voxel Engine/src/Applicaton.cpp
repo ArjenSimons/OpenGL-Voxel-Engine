@@ -1,5 +1,6 @@
 #include <GL/glew.h>
 #include "Window.h"
+#include "VertexBuffer.h"
 
 #include <iostream>
 #include <fstream>
@@ -97,11 +98,8 @@ int main(void)
 		0, 2, 3
 	};
 
-	//Vertex buffer object
-	unsigned int vbo;
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), positions, GL_STATIC_DRAW);
+	VertexBuffer vbo = VertexBuffer(positions, 8 * sizeof(float));
+	vbo.Bind();
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
