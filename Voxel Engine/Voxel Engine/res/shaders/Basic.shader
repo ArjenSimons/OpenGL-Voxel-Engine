@@ -6,7 +6,7 @@ uniform mat4 mvp;
 
 void main()
 {
-	gl_Position = position;
+	gl_Position = mvp * position;
 };
 
 #shader fragment

@@ -4,6 +4,7 @@
 #include "IndexBuffer.h"
 #include "Shader.h"
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -16,10 +17,10 @@ int main(void)
 		Window window = Window(WindowProps());
 
 		float positions[8]{
-			-0.5f, -0.5,
-			 0.5f, -0.5f,
-			 0.5f,  0.5f,
-			-0.5f,  0.5f
+			100.0f, 100.0f,
+			200.0f, 100.0f,
+			200.0f, 200.0f,
+			100.0f, 200.0f
 		};
 
 		unsigned int indices[6]{
@@ -35,6 +36,9 @@ int main(void)
 		IndexBuffer ibo(indices, 6);
 
 		Shader shader("res/shaders/Basic.shader");
+
+		glm::mat4 orthoProj = glm::ortho(0.0f, (float)window.GetWidth(), 0.0f, (float)window.GetHeight(), 0.0f, 1.0f);
+		shader.SetMat4("mvp", orthoProj);
 
 		while (window.IsRunning())
 		{
