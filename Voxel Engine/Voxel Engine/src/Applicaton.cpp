@@ -3,6 +3,7 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "Shader.h"
+#include <glm/glm.hpp>
 
 #include <iostream>
 #include <fstream>

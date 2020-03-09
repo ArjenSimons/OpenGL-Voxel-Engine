@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <glm/glm.hpp>
 
 struct ShaderProgramSource
 {
@@ -22,4 +23,6 @@ private:
 	ShaderProgramSource ParseShader(const std::string& filepath);
 	unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
 	unsigned int CompileShader(unsigned int type, const std::string& source);
+public:
+	unsigned int SetMat4(const char* attribName, glm::mat4 mvp);
 };
