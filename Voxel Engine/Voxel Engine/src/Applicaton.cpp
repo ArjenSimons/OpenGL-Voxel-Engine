@@ -1,45 +1,55 @@
-#include <GLFW/glfw3.h>
+#include <GL/glew.h>
+#include "Window.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
+#include "Shader.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
 
 int main(void)
 {
-	GLFWwindow* window;
-
-	/* Initialize the library */
-	if (!glfwInit())
-		return -1;
-
-	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(1280, 720, "Voxel Engine", NULL, NULL);
-	if (!window)
 	{
-		glfwTerminate();
-		return -1;
+		Window window = Window(WindowProps());
+
+		float positions[8]{
+			100.0f, 100.0f,
+			200.0f, 100.0f,
+			200.0f, 200.0f,
+			100.0f, 200.0f
+		};
+
+		unsigned int indices[6]{
+			0, 1, 2,
+			0, 2, 3
+		};
+
+		VertexBuffer vbo(positions, 8 * sizeof(float));
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+
+		IndexBuffer ibo(indices, 6);
+
+		Shader shader("res/shaders/Basic.shader");
+
+		glm::mat4 orthoProj = glm::ortho(0.0f, (float)window.GetWidth(), 0.0f, (float)window.GetHeight(), 0.0f, 1.0f);
+		shader.SetMat4("mvp", orthoProj);
+
+		while (window.IsRunning())
+		{
+			/*Render*/
+			glClear(GL_COLOR_BUFFER_BIT);
+
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+			window.OnUpdate();
+		}
 	}
-
-	/* Make the window's context current */
-	glfwMakeContextCurrent(window);
-
-	/* Loop until the user closes the window */
-	while (!glfwWindowShouldClose(window))
-	{
-		/* Render here */
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		glBegin(GL_TRIANGLES);
-		glVertex2f(-0.5f, -0.5f);
-		glVertex2f(0.0f, 0.5f);
-		glVertex2f(0.5f, -0.5f);
-		glEnd();
-
-
-
-		/* Swap front and back buffers */
-		glfwSwapBuffers(window);
-
-		/* Poll for and process events */
-		glfwPollEvents();
-	}
-
 	glfwTerminate();
+
 	return 0;
 }
