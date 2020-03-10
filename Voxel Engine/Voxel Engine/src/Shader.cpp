@@ -88,11 +88,11 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 	return id;
 }
 
-unsigned int Shader::SetMat4(const char* attribName, glm::mat4 mvp)
+unsigned int Shader::SetMat4(const char* attribName, glm::mat4 matrix)
 {
 	unsigned int uniformLocation = glGetUniformLocation(m_RendererId, attribName);
 
-	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &mvp[0][0]);
+	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &matrix[0][0]);
 
 	return uniformLocation;
 }
