@@ -5,6 +5,7 @@
 #include "Shader.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "Camera.h"
 
 #include <iostream>
 #include <fstream>
@@ -16,38 +17,37 @@ int main(void)
 	{
 		Window window = Window(WindowProps());
 
-		float positions[72]{
+		float positions[72 * 2]{
 			//south
-			-1.0f, -1.0f,  1.0f,
-			 1.0f, -1.0f,  1.0f,
-			 1.0f,  1.0f,  1.0f,
-			-1.0f,  1.0f,  1.0f,
-			//north
-			-1.0f, -1.0f, -1.0f,
-			 1.0f, -1.0f, -1.0f,
-			 1.0f,  1.0f, -1.0f,
-			-1.0f,  1.0f, -1.0f,
+			-1.0f, -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+			 1.0f, -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+			 1.0f,  1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+			-1.0f,  1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+			//north				 
+			-1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f,
+			 1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f,
+			 1.0f,  1.0f, -1.0f, 0.0f, 0.0f, -1.0f,
+			-1.0f,  1.0f, -1.0f, 0.0f, 0.0f,  1.0f,
 			//west
-			-1.0f, -1.0f, -1.0f,
-			-1.0f, -1.0f,  1.0f,
-			-1.0f,  1.0f,  1.0f,
-			-1.0f,  1.0f, -1.0f,
+			-1.0f, -1.0f, -1.0f, -1.0f, 0.0f, 0.0f,
+			-1.0f, -1.0f,  1.0f, -1.0f, 0.0f, 0.0f,
+			-1.0f,  1.0f,  1.0f, -1.0f, 0.0f, 0.0f,
+			-1.0f,  1.0f, -1.0f, -1.0f, 0.0f, 0.0f,
 			//east
-			 1.0f, -1.0f, -1.0f,
-			 1.0f, -1.0f,  1.0f,
-			 1.0f,  1.0f,  1.0f,
-			 1.0f,  1.0f, -1.0f,
+			 1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
+			 1.0f, -1.0f,  1.0f, 1.0f, 0.0f, 0.0f,
+			 1.0f,  1.0f,  1.0f, 1.0f, 0.0f, 0.0f,
+			 1.0f,  1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
 			//up
-			-1.0f,  1.0f, -1.0f,
-			 1.0f,  1.0f, -1.0f,
-			 1.0f,  1.0f,  1.0f,
-			-1.0f,  1.0f,  1.0f,
+			-1.0f,  1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+			 1.0f,  1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+			 1.0f,  1.0f,  1.0f, 0.0f, 1.0f, 0.0f,
+			-1.0f,  1.0f,  1.0f, 0.0f, 1.0f, 0.0f,
 			//down
-			-1.0f, -1.0f, -1.0f,
-			 1.0f, -1.0f, -1.0f,
-			 1.0f, -1.0f,  1.0f,
-			-1.0f, -1.0f,  1.0f,
-
+			-1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f,
+			 1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f,
+			 1.0f, -1.0f,  1.0f, 0.0f, -1.0f, 0.0f,
+			-1.0f, -1.0f,  1.0f, 0.0f, -1.0f, 0.0f,
 		};
 
 		unsigned int indices[36]{
@@ -70,35 +70,44 @@ int main(void)
 			20, 22, 23
 		};
 
-		VertexBuffer vbo(positions, 72 * sizeof(float));
+		VertexBuffer vbo(positions, 72 * 2 * sizeof(float));
 
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0);
+
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, 6 * sizeof(float), &positions[3]);
 
 		IndexBuffer ibo(indices, 36);
 
 		Shader shader("res/shaders/Basic.shader");
-		
-		glm::mat4 view = glm::lookAt(
+
+		shader.SetVec3("lightDir", glm::vec3(0, 0, 1));
+		Camera cam(
 			glm::vec3(0, 0, 5),
-			glm::vec3(0, 0, 0),
-			glm::vec3(0, 1.0f, 0)
+			glm::vec3(0, 0, -1),
+			glm::vec3(0, 1, 0)
 		);
+
 		glm::mat4 orthoProj = glm::ortho(0.0f, (float)window.GetWidth(), 0.0f, (float)window.GetHeight(), 0.1f, 2.0f);
 		glm::mat4 perspProj = glm::perspective(glm::radians(45.0f), (float)window.GetWidth() / (float)window.GetHeight(), 0.1f, 100.0f);
 		glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		while (window.IsRunning())
 		{
+			//rotate cube
+			model = glm::rotate(model, glm::radians(-0.06f), glm::vec3(1, 0.5f, 1));
+
+			glm::mat4 mvp = perspProj * cam.GetViewMatrix() * model;
+			shader.SetMat4("mvp", mvp);
+
 			/*Render*/
 			glClear(GL_COLOR_BUFFER_BIT);
-			model = glm::rotate(model, glm::radians(-0.1f), glm::vec3(0.7f, 0.2, 0));
-
-			glm::mat4 mvp = perspProj * view * model;
-			shader.SetMat4("mvp", mvp);
 
 			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 			window.OnUpdate();
+			cam.ProcessInput(window.GetWindow());
 		}
 	}
 	glfwTerminate();

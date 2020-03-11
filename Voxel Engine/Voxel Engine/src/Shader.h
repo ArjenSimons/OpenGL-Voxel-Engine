@@ -24,5 +24,6 @@ private:
 	unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
 	unsigned int CompileShader(unsigned int type, const std::string& source);
 public:
+	unsigned int SetVec3(const char* attribName, glm::vec3 vector);
 	unsigned int SetMat4(const char* attribName, glm::mat4 mvp);
 };

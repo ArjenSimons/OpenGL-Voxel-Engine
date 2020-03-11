@@ -88,6 +88,14 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 	return id;
 }
 
+unsigned int Shader::SetVec3(const char* attribName, glm::vec3 vector) {
+	unsigned int uniformLocation = glGetUniformLocation(m_RendererId, attribName);
+
+	glUniform3f(uniformLocation, vector.x, vector.y, vector.z);
+
+	return uniformLocation;
+}
+
 unsigned int Shader::SetMat4(const char* attribName, glm::mat4 matrix)
 {
 	unsigned int uniformLocation = glGetUniformLocation(m_RendererId, attribName);
