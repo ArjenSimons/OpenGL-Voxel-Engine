@@ -16,6 +16,7 @@ int main(void)
 {
 	{
 		Window window = Window(WindowProps());
+		glfwSetInputMode(window.GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 		float positions[72 * 2]{
 			//south
@@ -89,15 +90,18 @@ int main(void)
 			glm::vec3(0, 0, -1),
 			glm::vec3(0, 1, 0)
 		);
+
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)window.GetWidth() / (float)window.GetHeight(), 0.1f, 100.0f);
 		glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 		glm::mat4 mvp = projection * cam.GetViewMatrix() * model;
+
+		glEnable(GL_DEPTH_TEST);
+
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		while (window.IsRunning())
 		{
-			glEnable(GL_DEPTH_TEST);
 			//rotate cube
-			model = glm::rotate(model, glm::radians(-0.06f), glm::vec3(1, 0.5f, 1));
+			model = glm::rotate(model, glm::radians(-0.5f), glm::vec3(1, 0.5f, 1));
 
 			glm::mat4 mvp = projection * cam.GetViewMatrix() * model;
 			shader.SetMat4("mvp", mvp);

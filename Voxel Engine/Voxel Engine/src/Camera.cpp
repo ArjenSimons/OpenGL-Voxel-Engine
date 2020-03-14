@@ -5,24 +5,77 @@
 Camera::Camera(glm::vec3 position, glm::vec3 front, glm::vec3 up)
 	: m_Position(position), m_Front(front), m_Up(up)
 {
-	m_ViewDir = glm::normalize(position + front);
-	m_ViewMatrix = glm::lookAt(position, m_ViewDir, up);
+	m_ViewMatrix = glm::lookAt(position, GetViewDir(), up);
+	m_LastFrame = glfwGetTime();
+	m_Yaw = -90;
+	m_Pitch = 0;
 }
 
 Camera::~Camera()
 {
 }
 
-void Camera::ProcessInput(GLFWwindow * window)
+void Camera::ProcessInput(GLFWwindow* window)
+{
+	SetTime();
+
+	CalculatePosition(window);
+	CalculateDirection(window);
+
+	m_ViewMatrix = glm::lookAt(m_Position, GetViewDir(), m_Up);
+}
+
+void Camera::CalculatePosition(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		m_Position -= m_Speed * m_ViewDir;
+		m_Position += GetSpeed() * m_Front;
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		m_Position += m_Speed * m_ViewDir;
+		m_Position -= GetSpeed() * m_Front;
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		m_Position -= m_Speed * glm::normalize(glm::cross(m_Front, m_Up));
+		m_Position -= GetSpeed() * glm::normalize(glm::cross(m_Front, m_Up));
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		m_Position += m_Speed * glm::normalize(glm::cross(m_Front, m_Up));
+		m_Position += GetSpeed() * glm::normalize(glm::cross(m_Front, m_Up));
+}
 
-	m_ViewMatrix = glm::lookAt(m_Position, m_Position + m_Front, m_Up);
+void Camera::CalculateDirection(GLFWwindow* window)
+{
+	double xPos;
+	double yPos;
+	glfwGetCursorPos(window, &xPos, &yPos);
+
+	if (firstCursorMovement)
+	{
+		prefXPos = xPos;
+		prefYPos = yPos;
+		firstCursorMovement = false;
+	}
+
+	deltaX = xPos - prefXPos;
+	deltaY = yPos - prefYPos;
+	prefXPos = xPos;
+	prefYPos = yPos;
+
+	deltaX *= m_Sensitivity * m_DeltaTime;
+	deltaY *= m_Sensitivity * m_DeltaTime;
+
+	m_Pitch -= deltaY;
+	m_Yaw += deltaX;
+
+	glm::vec3 dir;
+
+	dir.x = glm::cos(glm::radians(m_Yaw)) * glm::cos(glm::radians(m_Pitch));
+	dir.y = glm::sin(glm::radians(m_Pitch));
+	dir.z = glm::sin(glm::radians(m_Yaw)) * glm::cos(glm::radians(m_Pitch));
+	m_Front = glm::normalize(dir);
+}
+
+void Camera::SetTime()
+{
+	m_CurrentFrame = glfwGetTime();
+	m_DeltaTime = m_CurrentFrame - m_LastFrame;
+	m_LastFrame = m_CurrentFrame;
+
+	float frameRate;
+	frameRate = 1 / m_DeltaTime;
+	std::cout << frameRate << std::endl;
 }
