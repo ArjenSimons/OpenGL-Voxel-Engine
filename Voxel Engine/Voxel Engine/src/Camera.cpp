@@ -55,11 +55,13 @@ void Camera::CalculateDirection(GLFWwindow* window)
 	prefXPos = xPos;
 	prefYPos = yPos;
 
-	deltaX *= m_Sensitivity * m_DeltaTime;
-	deltaY *= m_Sensitivity * m_DeltaTime;
-
+	deltaX *= m_Sensitivity;
+	deltaY *= m_Sensitivity;
+	 
 	m_Pitch -= deltaY;
 	m_Yaw += deltaX;
+	
+	m_Pitch = glm::clamp(m_Pitch, -89.9f, 89.9f);
 
 	glm::vec3 dir;
 
@@ -67,6 +69,7 @@ void Camera::CalculateDirection(GLFWwindow* window)
 	dir.y = glm::sin(glm::radians(m_Pitch));
 	dir.z = glm::sin(glm::radians(m_Yaw)) * glm::cos(glm::radians(m_Pitch));
 	m_Front = glm::normalize(dir);
+	std::cout << dir.y << std::endl;
 }
 
 void Camera::SetTime()
@@ -77,5 +80,5 @@ void Camera::SetTime()
 
 	float frameRate;
 	frameRate = 1 / m_DeltaTime;
-	std::cout << frameRate << std::endl;
+	//std::cout << frameRate << std::endl;
 }

@@ -102,7 +102,7 @@ int main(void)
 		while (window.IsRunning())
 		{
 			//rotate cube
-			model = glm::rotate(model, glm::radians(-0.5f), glm::vec3(1, 0.5f, 1));
+			model = glm::rotate(model, glm::radians(-0.1f), glm::vec3(1, 0.5f, 1));
 
 			glm::mat4 mvp = projection * cam.GetViewMatrix() * model;
 			shader.SetMat4("mvp", mvp);

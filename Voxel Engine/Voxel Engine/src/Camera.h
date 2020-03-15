@@ -10,7 +10,7 @@ private:
 	glm::mat4 m_ViewMatrix;
 
 	float const m_Speed = 6.0f;
-	float const m_Sensitivity = 3.0f;
+	float const m_Sensitivity = 0.1f;
 
 	float m_Yaw;
 	float m_Pitch;
