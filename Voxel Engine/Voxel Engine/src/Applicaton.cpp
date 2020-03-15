@@ -96,6 +96,7 @@ int main(void)
 		glm::mat4 mvp = projection * cam.GetViewMatrix() * model;
 
 		glEnable(GL_DEPTH_TEST);
+		glfwSwapInterval(0); //Disable vsync
 
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		while (window.IsRunning())
