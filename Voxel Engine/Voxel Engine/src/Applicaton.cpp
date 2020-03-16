@@ -120,7 +120,7 @@ int main(void)
 		}
 
 		unsigned int i[3]{
-			0, 1, 2
+			0, 2, 1
 		};
 		std::vector<unsigned int> indices;
 		indices.insert(indices.end(), i, i + 3);
@@ -141,10 +141,12 @@ int main(void)
 		glm::mat4 model = glm::mat4(1.0f);// glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 		glm::mat4 mvp = projection * cam.GetViewMatrix() * model;
 
-		//glEnable(GL_DEPTH_TEST);
+		glEnable(GL_DEPTH_TEST);
 		glfwSwapInterval(0); //Disable vsync
 
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glCullFace(GL_FRONT);
+		glEnable(GL_CULL_FACE);
 		while (window.IsRunning())
 		{
 			//rotate cube

@@ -20,7 +20,7 @@ void Camera::ProcessInput(GLFWwindow* window)
 	SetTime();
 
 	CalculatePosition(window);
-	//CalculateDirection(window);
+	CalculateDirection(window);
 
 	m_ViewMatrix = glm::lookAt(m_Position, GetViewDir(), m_Up);
 }

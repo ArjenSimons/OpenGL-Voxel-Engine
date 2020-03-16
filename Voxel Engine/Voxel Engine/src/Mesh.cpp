@@ -6,7 +6,7 @@
 #include <iostream>
 
 
-Mesh::Mesh(std::vector<Vertex> vertices , std::vector<unsigned int>& indices)
+Mesh::Mesh(const std::vector<Vertex>& vertices , const std::vector<unsigned int>& indices)
 	: m_Vertices(vertices),
 	  m_Indices(indices),
 	  VBO(&vertices[0], 12 * sizeof(float)),
