@@ -20,7 +20,7 @@ void Camera::ProcessInput(GLFWwindow* window)
 	SetTime();
 
 	CalculatePosition(window);
-	CalculateDirection(window);
+	//CalculateDirection(window);
 
 	m_ViewMatrix = glm::lookAt(m_Position, GetViewDir(), m_Up);
 }
@@ -79,5 +79,5 @@ void Camera::SetTime()
 
 	float frameRate;
 	frameRate = 1 / m_DeltaTime;
-	std::cout << frameRate << std::endl;
+	//std::cout << frameRate << std::endl;
 }
