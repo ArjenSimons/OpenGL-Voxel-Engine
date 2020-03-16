@@ -6,7 +6,7 @@
 #include <iostream>
 
 
-Mesh::Mesh(std::vector<float> vertices , std::vector<unsigned int>& indices)
+Mesh::Mesh(std::vector<Vertex> vertices , std::vector<unsigned int>& indices)
 	: m_Vertices(vertices),
 	  m_Indices(indices),
 	  VBO(&vertices[0], 12 * sizeof(float)),
@@ -23,13 +23,13 @@ Mesh::~Mesh()
 void Mesh::ConstructMesh()
 {
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 
-	/*glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
 
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));*/
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
 }
 
 void Mesh::Draw() const

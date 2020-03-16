@@ -125,7 +125,7 @@ int main(void)
 		std::vector<unsigned int> indices;
 		indices.insert(indices.end(), i, i + 3);
 
-		Mesh chunk(positions, indices);
+		Mesh chunk(vertices, indices);
 
 		Shader shader("res/shaders/Basic.shader");
 
