@@ -13,13 +13,13 @@ class Mesh
 {
 public:
 	//std::vector<Vertex> m_Vertices;
-	float (&m_Positions)[12];
-	unsigned int (&m_Indices)[3];
+	std::vector<float> m_Vertices;
+	std::vector<unsigned int> m_Indices;
 private:
 	VertexBuffer VBO;
 	IndexBuffer IBO;
 public:
-	Mesh(float (&positions)[12], unsigned int (&indices)[3]);
+	Mesh(std::vector<float>& vertices, std::vector<unsigned int>& indices);
 	~Mesh();
 
 	void Draw() const;

@@ -6,11 +6,11 @@
 #include <iostream>
 
 
-Mesh::Mesh(float (&vertices)[12], unsigned int (&indices)[3])
-	: m_Positions(vertices),
+Mesh::Mesh(std::vector<float> vertices , std::vector<unsigned int>& indices)
+	: m_Vertices(vertices),
 	  m_Indices(indices),
-	  VBO(vertices, 12 * sizeof(float)),
-	  IBO(indices, 3)
+	  VBO(&vertices[0], 12 * sizeof(float)),
+	  IBO(&indices[0], 3)
 {
 
 	ConstructMesh();

@@ -95,8 +95,8 @@ int main(void)
 		//glEnableVertexAttribArray(0);
 		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
 		//IndexBuffer ibo(ind, 3);
-		//std::vector<float> positions;
-		//positions.insert(positions.end(), pos, pos + 12);
+		std::vector<float> positions(pos, pos + 12);
+
 		std::vector<Vertex> vertices;
 
 		{
@@ -122,10 +122,10 @@ int main(void)
 		unsigned int i[3]{
 			0, 1, 2
 		};
-		//std::vector<unsigned int> indices;
-		//indices.insert(indices.end(), i, i + 3);
+		std::vector<unsigned int> indices;
+		indices.insert(indices.end(), i, i + 3);
 
-		Mesh chunk(pos, i);
+		Mesh chunk(positions, indices);
 
 		Shader shader("res/shaders/Basic.shader");
 
