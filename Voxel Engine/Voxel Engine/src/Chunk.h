@@ -43,5 +43,6 @@ public:
 	unsigned char GetNeighbor(int x, int y, int z, Direction dir);
 private:
 	bool CellIsInMap(glm::ivec3 position);
+	void InitVoxelData();
 };
 

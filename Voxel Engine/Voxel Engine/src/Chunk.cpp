@@ -1,4 +1,5 @@
 #include "Chunk.h"
+#include <iostream>
 
 const glm::ivec3 directionOffset[6]{
 	glm::ivec3(0,  1,  0),
@@ -38,11 +39,15 @@ Chunk::Chunk()
 	indices.insert(indices.end(), i, i + 3);
 
 	mesh.Update(vertices, indices);
+
+	InitVoxelData();
+
 }
 
 Chunk::~Chunk()
 {
 }
+
 
 unsigned char Chunk::GetCell(int x, int y, int z)
 {
@@ -56,7 +61,7 @@ unsigned char Chunk::GetNeighbor(int x, int y, int z, Direction dir)
 	if (CellIsInMap(neighborPos))
 		return GetCell(neighborPos.x, neighborPos.y, neighborPos.z);
 
-	return (unsigned char)1;
+	return 0;
 }
 
 bool Chunk::CellIsInMap(glm::ivec3 position)
@@ -73,5 +78,21 @@ bool Chunk::CellIsInMap(glm::ivec3 position)
 		return true;
 }
 
+void Chunk::InitVoxelData()
+{
+	for (int x = 0; x < xSize; x++)
+	{
+		for (int z = 0; z < zSize; z++)
+		{
+			for (size_t y = 0; y < ySize; y++)
+			{
+				if (y > z)
+					chunk[x][y][z] = AIR;
+				else
+					chunk[x][y][z] = GRASS;
+			}
+		}
+	}
+}
 
 
