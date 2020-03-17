@@ -74,9 +74,10 @@ Chunk::Chunk()
 	mesh.Update(vertices, indices);
 
 	InitVoxelData();
-	//GenerateMesh();
+	GenerateMesh();
 
-
+	indices.clear();
+	vertices.clear();
 }
 
 Chunk::~Chunk()
@@ -115,6 +116,8 @@ bool Chunk::CellIsInMap(glm::ivec3 position) const
 
 void Chunk::GenerateMesh()
 {
+	vertices.clear();
+	indices.clear();
 	for (unsigned int x = 0; x < xSize; x++)
 	{
 		for (unsigned int z = 0; z < zSize; z++)
@@ -131,17 +134,17 @@ void Chunk::GenerateMesh()
 		}
 	}
 
-	
 	mesh.Update(vertices, indices);
 }
 
 void Chunk::MakeCube(glm::ivec3 position)
 {
-	for (int i = 0; i < 6; i++)
+	/*for (int i = 0; i < 6; i++)
 	{
 		if (GetNeighbor(position.x, position.y, position.z, static_cast<Direction>(i)) == 0)
 			MakeFace(i, position);
-	}
+	}*/
+	MakeFace(3, position);
 }
 
 void Chunk::MakeFace(int dir, glm::vec3 position)
@@ -155,36 +158,44 @@ void Chunk::MakeFace(int dir, glm::vec3 position)
 	indices.push_back(nVertices + 2);
 	indices.push_back(nVertices + 3);
 	indices.push_back(nVertices + 1);
+
+	std::cout << nVertices << nVertices + 2 << nVertices + 1 << nVertices + 2 << nVertices + 3 << nVertices + 1 << std::endl;
 }
 
 Vertex* Chunk::GetFaceVertices(int dir, glm::vec3 position) const
 {
 	glm::vec3 normal = normals[dir];
-	glm::vec3 color = GetColor(static_cast<Block>(GetCell(position.x, position.y, position.z)));
+	glm::vec3 color = glm::vec3(0, 0, 1);//GetColor(static_cast<Block>(GetCell(position.x, position.y, position.z)));
 
 	Vertex faceVetices[4]
 	{
 		Vertex(
-			normalizedVertices[quads[dir].x] * 0.5f + position,
+			normalizedVertices[quads[dir].x] + position,
 			normal,
 			color
 		),
 		Vertex(
-			normalizedVertices[quads[dir].y] * 0.5f + position,
+			normalizedVertices[quads[dir].y] + position,
 			normal,
 			color
 		),
 		Vertex(
-			normalizedVertices[quads[dir].z] * 0.5f + position,
+			normalizedVertices[quads[dir].z] + position,
 			normal,
 			color
 		),
 		Vertex(
-			normalizedVertices[quads[dir].w] * 0.5f + position,
+			normalizedVertices[quads[dir].w] + position,
 			normal,
 			color
 		)
 	};
+
+	std::cout << faceVetices[0].Position.x << " " << faceVetices[0].Position.y << " " << faceVetices[0].Position.z << std::endl;
+	std::cout << faceVetices[1].Position.x << " " << faceVetices[1].Position.y << " " << faceVetices[1].Position.z << std::endl;
+	std::cout << faceVetices[2].Position.x << " " << faceVetices[2].Position.y << " " << faceVetices[2].Position.z << std::endl;
+	std::cout << faceVetices[3].Position.x << " " << faceVetices[3].Position.y << " " << faceVetices[3].Position.z << std::endl;
+
 
 	return faceVetices;
 }

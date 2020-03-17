@@ -40,7 +40,7 @@ void Mesh::Update(const std::vector<Vertex>& vertices, const std::vector<unsigne
 	IBO.Update(&indices[0], indices.size());
 
 	std::cout << vertices.size() << std::endl;
-	std::cout << vertices.size() << std::endl;
+	std::cout << indices.size() << std::endl;
 }
 
 void Mesh::Draw() const
