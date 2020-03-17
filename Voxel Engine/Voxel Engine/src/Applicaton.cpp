@@ -7,6 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Camera.h"
 #include "Mesh.h"
+#include "Chunk.h"
 
 #include <iostream>
 #include <fstream>
@@ -127,6 +128,8 @@ int main(void)
 
 		Mesh chunk(vertices, indices);
 
+		Chunk chunks;
+
 		Shader shader("res/shaders/Basic.shader");
 
 		shader.SetVec3("lightDir", glm::vec3(-0.5f, -0.5f, -0.5f));
@@ -162,7 +165,8 @@ int main(void)
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
-			chunk.Draw();
+			//chunk.Draw();
+			chunks.mesh.Draw();
 			//glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
 			window.OnUpdate();
 			cam.ProcessInput(window.GetWindow());

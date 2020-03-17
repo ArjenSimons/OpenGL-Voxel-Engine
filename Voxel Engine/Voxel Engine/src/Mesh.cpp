@@ -9,8 +9,8 @@
 Mesh::Mesh(const std::vector<Vertex>& vertices , const std::vector<unsigned int>& indices)
 	: m_Vertices(vertices),
 	  m_Indices(indices),
-	  VBO(&vertices[0], 12 * sizeof(float)),
-	  IBO(&indices[0], 3)
+	  VBO(&vertices[0], vertices.size() * sizeof(Vertex)),
+	  IBO(&indices[0], indices.size())
 {
 
 	ConstructMesh();
@@ -32,12 +32,18 @@ void Mesh::ConstructMesh()
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
 }
 
+void Mesh::Update(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices)
+{
+	m_Vertices = vertices;
+	m_Indices = indices;
+	VBO.Update(&vertices[0], vertices.size() * sizeof(Vertex));
+	IBO.Update(&indices[0], indices.size());
+}
+
 void Mesh::Draw() const
 {
-	//std::cout << "drawing mesh with size: " <<  m_Indices.size() << std::endl;
-	//std::cout << m_Indices.size() << std::endl;
-	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
-
+	if (m_Indices.size() > 1 && m_Vertices.size() > 1)
+		glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, nullptr);
 }
 
 void Mesh::Clear()

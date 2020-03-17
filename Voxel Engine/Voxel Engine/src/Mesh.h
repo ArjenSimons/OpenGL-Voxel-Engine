@@ -12,15 +12,16 @@ struct Vertex
 class Mesh
 {
 public:
+private:
 	std::vector<Vertex> m_Vertices;
 	std::vector<unsigned int> m_Indices;
-private:
 	VertexBuffer VBO;
 	IndexBuffer IBO;
 public:
 	Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
 	~Mesh();
 
+	void Update(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
 	void Draw() const;
 	void Clear();
 private:
