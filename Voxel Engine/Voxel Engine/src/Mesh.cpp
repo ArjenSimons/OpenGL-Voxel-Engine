@@ -26,10 +26,10 @@ void Mesh::ConstructMesh()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
 
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Color));
 }
 
 void Mesh::Update(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices)
@@ -38,6 +38,9 @@ void Mesh::Update(const std::vector<Vertex>& vertices, const std::vector<unsigne
 	m_Indices = indices;
 	VBO.Update(&vertices[0], vertices.size() * sizeof(Vertex));
 	IBO.Update(&indices[0], indices.size());
+
+	std::cout << vertices.size() << std::endl;
+	std::cout << vertices.size() << std::endl;
 }
 
 void Mesh::Draw() const

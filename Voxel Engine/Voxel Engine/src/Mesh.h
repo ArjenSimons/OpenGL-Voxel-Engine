@@ -6,7 +6,15 @@
 
 struct Vertex
 {
-	glm::vec3 position, normal, color;
+	glm::vec3 Position, Normal, Color;
+
+	Vertex(
+		glm::vec3 position = glm::vec3(0, 0, 0),
+		glm::vec3 normal = glm::vec3(0, 0, 0),
+		glm::vec3 color = glm::vec3(0, 0, 0))
+		: Position(position), Normal(normal), Color(color)
+	{
+	}
 };
 
 class Mesh

@@ -102,21 +102,21 @@ int main(void)
 
 		{
 			Vertex vertex;
-			vertex.position = glm::vec3(-1.0f, -1.0f, 0.0f);
-			vertex.normal = glm::vec3(0.0f, 0.0f, 1.0f);
-			vertex.color = glm::vec3(0.0f, 0.0f, 1.0f);
+			vertex.Position = glm::vec3(-1.0f, -1.0f, 0.0f);
+			vertex.Normal = glm::vec3(0.0f, 0.0f, 1.0f);
+			vertex.Color = glm::vec3(0.0f, 0.0f, 1.0f);
 			vertices.push_back(vertex);
 
 			Vertex vertex1;
-			vertex1.position = glm::vec3(1.0f, -1.0f, 0.0f);
-			vertex1.normal = glm::vec3(0.0f, 0.0f, 1.0f);
-			vertex1.color = glm::vec3(0.0f, 0.0f, 1.0f);
+			vertex1.Position = glm::vec3(1.0f, -1.0f, 0.0f);
+			vertex1.Normal = glm::vec3(0.0f, 0.0f, 1.0f);
+			vertex1.Color = glm::vec3(0.0f, 0.0f, 1.0f);
 			vertices.push_back(vertex1);
 
 			Vertex vertex2;
-			vertex2.position = glm::vec3(0.0f, 1.0f, 0.0f);
-			vertex2.normal = glm::vec3(0.0f, 0.0f, 1.0f);
-			vertex2.color = glm::vec3(0.0f, 0.0f, 1.0f);
+			vertex2.Position = glm::vec3(0.0f, 1.0f, 0.0f);
+			vertex2.Normal = glm::vec3(0.0f, 0.0f, 1.0f);
+			vertex2.Color = glm::vec3(0.0f, 0.0f, 1.0f);
 			vertices.push_back(vertex2);
 		}
 
@@ -126,7 +126,7 @@ int main(void)
 		std::vector<unsigned int> indices;
 		indices.insert(indices.end(), i, i + 3);
 
-		Mesh chunk(vertices, indices);
+		//Mesh chunk(vertices, indices);
 
 		Chunk chunks;
 
@@ -148,8 +148,8 @@ int main(void)
 		glfwSwapInterval(0); //Disable vsync
 
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glCullFace(GL_FRONT);
-		glEnable(GL_CULL_FACE);
+		/*glCullFace(GL_FRONT);
+		glEnable(GL_CULL_FACE);*/
 		while (window.IsRunning())
 		{
 			//rotate cube

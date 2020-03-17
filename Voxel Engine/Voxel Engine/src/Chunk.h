@@ -27,9 +27,9 @@ class Chunk
 {
 public:
 private:
-	static const int xSize = 10;
-	static const int ySize = 10;
-	static const int zSize = 10;
+	static const unsigned int xSize = 10;
+	static const unsigned int ySize = 10;
+	static const unsigned int zSize = 10;
 	unsigned char chunk[xSize][ySize][zSize];
 
 	std::vector<Vertex> vertices{ vert };
@@ -39,10 +39,15 @@ public:
 	~Chunk();
 	Mesh mesh;
 
-	unsigned char GetCell(int x, int y, int z);
-	unsigned char GetNeighbor(int x, int y, int z, Direction dir);
+	unsigned char GetCell(int x, int y, int z) const;
+	unsigned char GetNeighbor(int x, int y, int z, Direction dir) const;
 private:
-	bool CellIsInMap(glm::ivec3 position);
+	bool CellIsInMap(glm::ivec3 position) const;
+	void GenerateMesh();
+	void MakeCube(glm::ivec3 position);
+	void MakeFace(int dir, glm::vec3 position);
+	Vertex* GetFaceVertices(int dir, glm::vec3 position) const;
+	glm::vec3 GetColor(Block block) const;
 	void InitVoxelData();
 };
 

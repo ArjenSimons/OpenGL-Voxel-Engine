@@ -10,26 +10,59 @@ const glm::ivec3 directionOffset[6]{
 	glm::ivec3(-1,  0,  0)
 };
 
+const glm::vec3 normals[6]{
+	glm::vec3(0,  1,  0),
+	glm::vec3(0, -1,  0),
+	glm::vec3(0,  0, -1),
+	glm::vec3(0,  0,  1),
+	glm::vec3(1,  0,  0),
+	glm::vec3(-1,  0,  0)
+};
+
+const glm::vec3 normalizedVertices[8] =
+{
+	glm::vec3(-1, -1,  1),
+	glm::vec3(1, -1,  1),
+	glm::vec3(-1,  1,  1),
+	glm::vec3(1,  1,  1),
+	glm::vec3(-1, -1, -1),
+	glm::vec3(1, -1, -1),
+	glm::vec3(-1,  1, -1),
+	glm::vec3(1,  1, -1)
+};
+
+const glm::ivec4 quads[6] =
+{
+	glm::ivec4(3, 2, 7, 6),    //Up
+	glm::ivec4(5, 4, 1, 0),    //Down
+	glm::ivec4(1, 0, 3, 2),    //North
+	glm::ivec4(4, 5, 6, 7),    //South
+	glm::ivec4(5, 1, 7, 3),    //East
+	glm::ivec4(0, 4, 2, 6)     //West
+};
+
+Block currentBlockType;
+
 Chunk::Chunk()
 	:mesh(vertices, indices)
 {
 	vertices.clear();
 	Vertex vertex;
-	vertex.position = glm::vec3(-1.0f, -1.0f, 0.0f);
-	vertex.normal = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertex.color = glm::vec3(0.0f, 0.0f, 1.0f);
+	vertex.Position = glm::vec3(-1.0f, -1.0f, 0.0f);
+	vertex.Normal = glm::vec3(0.0f, 0.0f, 1.0f);
+	vertex.Color = glm::vec3(0.0f, 0.0f, 1.0f);
 	vertices.push_back(vertex);
 
 	Vertex vertex1;
-	vertex1.position = glm::vec3(1.0f, -1.0f, 0.0f);
-	vertex1.normal = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertex1.color = glm::vec3(0.0f, 0.0f, 1.0f);
+	vertex1.Position = glm::vec3(1.0f, -1.0f, 0.0f);
+	vertex1.Normal = glm::vec3(0.0f, 0.0f, 1.0f);
+	vertex1.Color = glm::vec3(0.0f, 0.0f, 1.0f);
 	vertices.push_back(vertex1);
 
 	Vertex vertex2;
-	vertex2.position = glm::vec3(0.0f, 1.0f, 0.0f);
-	vertex2.normal = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertex2.color = glm::vec3(0.0f, 0.0f, 1.0f);
+	vertex2.Position = glm::vec3(0.0f, 1.0f, 0.0f);
+	vertex2.Normal = glm::vec3(0.0f, 0.0f, 1.0f);
+	vertex2.Color = glm::vec3(0.0f, 0.0f, 1.0f);
 	vertices.push_back(vertex2);
 
 	indices.clear();
@@ -41,6 +74,8 @@ Chunk::Chunk()
 	mesh.Update(vertices, indices);
 
 	InitVoxelData();
+	//GenerateMesh();
+
 
 }
 
@@ -49,12 +84,12 @@ Chunk::~Chunk()
 }
 
 
-unsigned char Chunk::GetCell(int x, int y, int z)
+unsigned char Chunk::GetCell(int x, int y, int z) const
 {
 	return chunk[x][y][z];
 }
 
-unsigned char Chunk::GetNeighbor(int x, int y, int z, Direction dir)
+unsigned char Chunk::GetNeighbor(int x, int y, int z, Direction dir) const
 {
 	glm::ivec3 neighborPos = glm::ivec3(x, y, z) + directionOffset[dir];
 
@@ -64,7 +99,7 @@ unsigned char Chunk::GetNeighbor(int x, int y, int z, Direction dir)
 	return 0;
 }
 
-bool Chunk::CellIsInMap(glm::ivec3 position)
+bool Chunk::CellIsInMap(glm::ivec3 position) const
 {
 	if (position.x < 0 ||
 		position.x >= xSize ||
@@ -75,16 +110,104 @@ bool Chunk::CellIsInMap(glm::ivec3 position)
 	{
 		return false;
 	}
-		return true;
+	return true;
+}
+
+void Chunk::GenerateMesh()
+{
+	for (unsigned int x = 0; x < xSize; x++)
+	{
+		for (unsigned int z = 0; z < zSize; z++)
+		{
+			for (unsigned int y = 0; y < ySize; y++)
+			{
+				currentBlockType = static_cast<Block>(GetCell(x, y, z));
+
+				if (currentBlockType == AIR)
+					continue;
+
+				MakeCube(glm::ivec3(x, y, z));
+			}
+		}
+	}
+
+	
+	mesh.Update(vertices, indices);
+}
+
+void Chunk::MakeCube(glm::ivec3 position)
+{
+	for (int i = 0; i < 6; i++)
+	{
+		if (GetNeighbor(position.x, position.y, position.z, static_cast<Direction>(i)) == 0)
+			MakeFace(i, position);
+	}
+}
+
+void Chunk::MakeFace(int dir, glm::vec3 position)
+{
+	int nVertices = vertices.size();
+	Vertex* faceVertices = GetFaceVertices(dir, position);
+	vertices.insert(vertices.end(), faceVertices, faceVertices + 4);
+	indices.push_back(nVertices);
+	indices.push_back(nVertices + 2);
+	indices.push_back(nVertices + 1);
+	indices.push_back(nVertices + 2);
+	indices.push_back(nVertices + 3);
+	indices.push_back(nVertices + 1);
+}
+
+Vertex* Chunk::GetFaceVertices(int dir, glm::vec3 position) const
+{
+	glm::vec3 normal = normals[dir];
+	glm::vec3 color = GetColor(static_cast<Block>(GetCell(position.x, position.y, position.z)));
+
+	Vertex faceVetices[4]
+	{
+		Vertex(
+			normalizedVertices[quads[dir].x] * 0.5f + position,
+			normal,
+			color
+		),
+		Vertex(
+			normalizedVertices[quads[dir].y] * 0.5f + position,
+			normal,
+			color
+		),
+		Vertex(
+			normalizedVertices[quads[dir].z] * 0.5f + position,
+			normal,
+			color
+		),
+		Vertex(
+			normalizedVertices[quads[dir].w] * 0.5f + position,
+			normal,
+			color
+		)
+	};
+
+	return faceVetices;
+}
+
+glm::vec3 Chunk::GetColor(Block block) const
+{
+	switch (block)
+	{
+	case (GRASS):
+		return glm::vec3(0, 0, 1);
+		break;
+	default:
+		return glm::vec3(0, 0, 1);
+	}
 }
 
 void Chunk::InitVoxelData()
 {
-	for (int x = 0; x < xSize; x++)
+	for (unsigned int x = 0; x < xSize; x++)
 	{
-		for (int z = 0; z < zSize; z++)
+		for (unsigned int z = 0; z < zSize; z++)
 		{
-			for (size_t y = 0; y < ySize; y++)
+			for (unsigned int y = 0; y < ySize; y++)
 			{
 				if (y > z)
 					chunk[x][y][z] = AIR;
@@ -94,5 +217,3 @@ void Chunk::InitVoxelData()
 		}
 	}
 }
-
-
