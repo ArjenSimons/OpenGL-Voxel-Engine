@@ -7,10 +7,10 @@ struct WindowProps
 	unsigned int Width, Height;
 
 	WindowProps(
-			const const char* title = "Voxel Engine",
-			unsigned int width = 1280,
-			unsigned int height = 720)
-		: Title(title), Width(width), Height(height) 
+		const const char* title = "Voxel Engine",
+		unsigned int width = 1280,
+		unsigned int height = 720)
+		: Title(title), Width(width), Height(height)
 	{
 	}
 };

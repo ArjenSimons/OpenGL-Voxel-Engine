@@ -3,18 +3,26 @@
 
 layout(location = 0) in vec4 position;
 layout(location = 1) in vec3 normal;
+layout(location = 2) in vec3 color;
 uniform mat4 mvp;
 uniform mat4 model;
 uniform vec3 lightDir;
 
 out float diff;
 out vec3 fragPos;
+out vec3 objectColor;
+
+float map(float value, float min1, float max1, float min2, float max2)
+{
+	return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
+}
 
 void main()
 {
 	gl_Position = mvp * position;
 	vec3 norm = vec3(model * vec4(normal, 1.0f));
-	diff = max(dot(norm, -normalize(lightDir)), 0.0f);
+	diff = map(dot(norm, -normalize(lightDir)), -1.0f, 1.0f, 0.1f, 1.0f);
+	objectColor = color;
 };
 
 #shader fragment
@@ -22,12 +30,13 @@ void main()
 
 layout(location = 0) out vec4 color;
 in float diff;
+in vec3 objectColor;
 
 void main()
 {
-	vec3 objectColor = vec3(0.0f, 0.0f, 1.0f);
-	vec3 result = objectColor * diff;
-	result = result + objectColor * 0.2f;
+	vec3 objColor = vec3(0.0f, 0.0f, 1.0f);
+	vec3 result = objColor * diff;
+	result = result;
 	color = vec4(result, 1.0f);
-	//color = vec4(objectColor, 1.0f);
+	//color = vec4(objColor, 1.0f);
 };

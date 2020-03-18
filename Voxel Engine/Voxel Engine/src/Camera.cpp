@@ -79,5 +79,5 @@ void Camera::SetTime()
 
 	float frameRate;
 	frameRate = 1 / m_DeltaTime;
-	std::cout << frameRate << std::endl;
+	//std::cout << frameRate << std::endl;
 }
