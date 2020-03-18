@@ -27,9 +27,9 @@ class Chunk
 {
 public:
 private:
-	static const unsigned int xSize = 1;
-	static const unsigned int ySize = 1;
-	static const unsigned int zSize = 1;
+	static const unsigned int xSize = 10;
+	static const unsigned int ySize = 10;
+	static const unsigned int zSize = 10;
 	unsigned char chunk[xSize][ySize][zSize];
 
 	std::vector<Vertex> vertices{ vert };
@@ -42,11 +42,12 @@ public:
 	unsigned char GetCell(int x, int y, int z) const;
 	unsigned char GetNeighbor(int x, int y, int z, Direction dir) const;
 private:
+	void CreateSquare();
 	bool CellIsInMap(glm::ivec3 position) const;
 	void GenerateMesh();
 	void MakeCube(glm::ivec3 position);
 	void MakeFace(int dir, glm::vec3 position);
-	Vertex* GetFaceVertices(int dir, glm::vec3 position) const;
+	void GetFaceVertices(int dir, glm::vec3 position);
 	glm::vec3 GetColor(Block block) const;
 	void InitVoxelData();
 };

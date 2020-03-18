@@ -30,8 +30,8 @@ in vec3 objectColor;
 void main()
 {
 	vec3 objColor = vec3(0.0f, 0.0f, 1.0f);
-	vec3 result = objectColor * diff;
-	result = result + objectColor * 0.2f;
+	vec3 result = objColor * diff;
+	result = result + objColor * 0.2f;
 	color = vec4(result, 1.0f);
-	color = vec4(objColor, 1.0f);
+	//color = vec4(objColor, 1.0f);
 };

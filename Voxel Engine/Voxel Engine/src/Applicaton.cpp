@@ -148,8 +148,8 @@ int main(void)
 		glfwSwapInterval(0); //Disable vsync
 
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		/*glCullFace(GL_FRONT);
-		glEnable(GL_CULL_FACE);*/
+		glCullFace(GL_BACK);
+		glEnable(GL_CULL_FACE);
 		while (window.IsRunning())
 		{
 			//rotate cube
