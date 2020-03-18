@@ -42,7 +42,6 @@ public:
 	unsigned char GetCell(int x, int y, int z) const;
 	unsigned char GetNeighbor(int x, int y, int z, Direction dir) const;
 private:
-	void CreateSquare();
 	bool CellIsInMap(glm::ivec3 position) const;
 	void GenerateMesh();
 	void MakeCube(glm::ivec3 position);

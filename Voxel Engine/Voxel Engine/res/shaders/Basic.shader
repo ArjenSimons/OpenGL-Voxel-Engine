@@ -12,11 +12,16 @@ out float diff;
 out vec3 fragPos;
 out vec3 objectColor;
 
+float map(float value, float min1, float max1, float min2, float max2)
+{
+	return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
+}
+
 void main()
 {
 	gl_Position = mvp * position;
 	vec3 norm = vec3(model * vec4(normal, 1.0f));
-	diff = max(dot(norm, -normalize(lightDir)), 0.0f);
+	diff = map(dot(norm, -normalize(lightDir)), -1.0f, 1.0f, 0.1f, 1.0f);
 	objectColor = color;
 };
 
@@ -31,7 +36,7 @@ void main()
 {
 	vec3 objColor = vec3(0.0f, 0.0f, 1.0f);
 	vec3 result = objColor * diff;
-	result = result + objColor * 0.2f;
+	result = result;
 	color = vec4(result, 1.0f);
 	//color = vec4(objColor, 1.0f);
 };

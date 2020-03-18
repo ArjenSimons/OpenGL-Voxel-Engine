@@ -75,8 +75,6 @@ Chunk::Chunk()
 
 	InitVoxelData();
 	GenerateMesh();
-
-	//CreateSquare();
 }
 
 Chunk::~Chunk()
@@ -97,42 +95,6 @@ unsigned char Chunk::GetNeighbor(int x, int y, int z, Direction dir) const
 		return GetCell(neighborPos.x, neighborPos.y, neighborPos.z);
 
 	return 0;
-}
-
-void Chunk::CreateSquare()
-{
-	vertices.clear();
-	indices.clear();
-
-	Vertex vertex;
-	vertex.Position = glm::vec3(-1.0f, -1.0f, -1.0f);
-	vertex.Normal = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertex.Color = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertices.push_back(vertex);
-
-	Vertex vertex1;
-	vertex1.Position = glm::vec3(1.0f, -1.0f, -1.0f);
-	vertex1.Normal = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertex1.Color = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertices.push_back(vertex1);
-
-	Vertex vertex2;
-	vertex2.Position = glm::vec3(-1.0f, 1.0f, -1.0f);
-	vertex2.Normal = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertex2.Color = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertices.push_back(vertex2);
-
-	Vertex vertex3;
-	vertex3.Position = glm::vec3(1.0f, 1.0f, -1.0f);
-	vertex3.Normal = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertex3.Color = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertices.push_back(vertex3);
-
-	unsigned int i[6]{
-			0, 2, 1, 2, 3, 1
-	};
-	indices.insert(indices.end(), i, i + 6);
-	mesh.Update(vertices, indices);
 }
 
 bool Chunk::CellIsInMap(glm::ivec3 position) const
