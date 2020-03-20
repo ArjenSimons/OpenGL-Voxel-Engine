@@ -33,5 +33,5 @@ public:
 	void Draw() const;
 	void Clear();
 private:
-	void ConstructMesh();
+	void SetAttribPointers();
 };

@@ -28,19 +28,19 @@ int main(void)
 		shader.SetVec3("lightDir", glm::vec3(-0.5f, -0.9f, 0.3f));
 
 		Camera cam(
-			glm::vec3(0, 0, 5),
+			glm::vec3(0, 60, 5),
 			glm::vec3(0, 0, -1),
 			glm::vec3(0, 1, 0)
 		);
 
-		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)window.GetWidth() / (float)window.GetHeight(), 0.1f, 100.0f);
+		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)window.GetWidth() / (float)window.GetHeight(), 0.1f, 500.0f);
 		glm::mat4 model = glm::mat4(1.0f);
 		glm::mat4 mvp = projection * cam.GetViewMatrix() * model;
 
 		glEnable(GL_DEPTH_TEST);
 		glfwSwapInterval(0); //Disable vsync
 
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glCullFace(GL_BACK);
 		glEnable(GL_CULL_FACE);
 		while (window.IsRunning())

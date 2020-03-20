@@ -23,13 +23,14 @@ enum Block
 
 static Vertex vert;
 
+
 class Chunk
 {
 public:
 private:
-	static const unsigned int xSize = 10;
-	static const unsigned int ySize = 10;
-	static const unsigned int zSize = 10;
+	static const unsigned int xSize = 100;
+	static const unsigned int ySize = 50;
+	static const unsigned int zSize = 100;
 	unsigned char chunk[xSize][ySize][zSize];
 
 	std::vector<Vertex> vertices{ vert };
@@ -50,4 +51,3 @@ private:
 	glm::vec3 GetColor(Block block) const;
 	void InitVoxelData();
 };
-
