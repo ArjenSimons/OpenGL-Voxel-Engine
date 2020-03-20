@@ -27,6 +27,10 @@ void Camera::ProcessInput(GLFWwindow* window)
 
 void Camera::CalculatePosition(GLFWwindow* window)
 {
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		m_CurrentSpeed = m_FastSpeed;
+	else m_CurrentSpeed = m_Speed;
+
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		m_Position += GetSpeed() * m_Front;
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -79,5 +83,5 @@ void Camera::SetTime()
 
 	float frameRate;
 	frameRate = 1 / m_DeltaTime;
-	//std::cout << frameRate << std::endl;
+	std::cout << frameRate << std::endl;
 }

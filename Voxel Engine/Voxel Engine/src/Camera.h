@@ -9,7 +9,9 @@ private:
 	glm::vec3 m_Up;
 	glm::mat4 m_ViewMatrix;
 
-	float const m_Speed = 6.0f;
+	float const m_Speed = 20.0f;
+	float const m_FastSpeed = 100.0f;
+	float m_CurrentSpeed = m_Speed;
 	float const m_Sensitivity = 0.1f;
 
 	float m_Yaw;
@@ -35,7 +37,8 @@ public:
 	glm::vec3 GetViewDir() const { return m_Position + m_Front; }
 	glm::mat4 GetViewMatrix() const { return m_ViewMatrix; }
 
-	float GetSpeed() const { return m_Speed * m_DeltaTime; }
+	float GetSpeed() const { return m_CurrentSpeed * m_DeltaTime; }
+	
 private:
 	void CalculateDirection(GLFWwindow* window);
 	void CalculatePosition(GLFWwindow* window);
