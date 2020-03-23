@@ -156,8 +156,6 @@ void Chunk::MakeFace(int dir, glm::vec3 position)
 	indices.push_back(nVertices + 2);
 	indices.push_back(nVertices + 3);
 	indices.push_back(nVertices + 1);
-
-	//std::cout << nVertices << nVertices + 2 << nVertices + 1 << nVertices + 2 << nVertices + 3 << nVertices + 1 << std::endl;
 }
 
 void Chunk::GetFaceVertices(int dir, glm::vec3 position)
