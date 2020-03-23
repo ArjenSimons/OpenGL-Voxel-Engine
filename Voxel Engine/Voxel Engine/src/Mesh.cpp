@@ -13,14 +13,14 @@ Mesh::Mesh(const std::vector<Vertex>& vertices , const std::vector<unsigned int>
 	  IBO(&indices[0], indices.size())
 {
 
-	ConstructMesh();
+	SetAttribPointers();
 }
 
 Mesh::~Mesh()
 {
 }
 
-void Mesh::ConstructMesh()
+void Mesh::SetAttribPointers()
 {
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);

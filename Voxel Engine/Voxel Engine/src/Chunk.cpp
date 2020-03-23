@@ -1,44 +1,45 @@
 #include "Chunk.h"
 #include <iostream>
+#include "glm/gtc/noise.hpp"
 
 const glm::ivec3 directionOffset[6]{
-	glm::ivec3(0,  1,  0),
-	glm::ivec3(0, -1,  0),
-	glm::ivec3(0,  0,  1),
-	glm::ivec3(0,  0, -1),
-	glm::ivec3(1,  0,  0),
-	glm::ivec3(-1,  0,  0)
+	glm::ivec3( 0,  1,  0),	//Up
+	glm::ivec3( 0, -1,  0),	//Down
+	glm::ivec3( 0,  0,  1),	//South
+	glm::ivec3( 0,  0, -1),	//North
+	glm::ivec3( 1,  0,  0),	//East
+	glm::ivec3(-1,  0,  0)	//West
 };
 
 const glm::vec3 normals[6]{
-	glm::vec3(0,  1,  0),
-	glm::vec3(0, -1,  0),
-	glm::vec3(0,  0,  1),
-	glm::vec3(0,  0, -1),
-	glm::vec3(1,  0,  0),
+	glm::vec3( 0,  1,  0),
+	glm::vec3( 0, -1,  0),
+	glm::vec3( 0,  0,  1),
+	glm::vec3( 0,  0, -1),
+	glm::vec3( 1,  0,  0),
 	glm::vec3(-1,  0,  0)
 };
 
 const glm::vec3 normalizedVertices[8] =
 {
-	glm::vec3(-1, -1,  1),
-	glm::vec3(1, -1,  1),
-	glm::vec3(-1,  1,  1),
-	glm::vec3(1,  1,  1),
-	glm::vec3(-1, -1, -1),
-	glm::vec3(1, -1, -1),
-	glm::vec3(-1,  1, -1),
-	glm::vec3(1,  1, -1)
+	glm::vec3(-0.5f, -0.5f,  0.5f),
+	glm::vec3( 0.5f, -0.5f,  0.5f),
+	glm::vec3(-0.5f,  0.5f,  0.5f),
+	glm::vec3( 0.5f,  0.5f,  0.5f),
+	glm::vec3(-0.5f, -0.5f, -0.5f),
+	glm::vec3( 0.5f, -0.5f, -0.5f),
+	glm::vec3(-0.5f,  0.5f, -0.5f),
+	glm::vec3( 0.5f,  0.5f, -0.5f)
 };
 
 const glm::ivec4 quads[6] =
 {
-	glm::ivec4(3, 2, 7, 6),    //Up
-	glm::ivec4(5, 4, 1, 0),    //Down
-	glm::ivec4(1, 0, 3, 2),    //North
-	glm::ivec4(4, 5, 6, 7),    //South
-	glm::ivec4(5, 1, 7, 3),    //East
-	glm::ivec4(0, 4, 2, 6)     //West
+	glm::ivec4(3, 2, 7, 6),	//Up
+	glm::ivec4(5, 4, 1, 0),	//Down
+	glm::ivec4(1, 0, 3, 2),	//South
+	glm::ivec4(4, 5, 6, 7),	//North
+	glm::ivec4(5, 1, 7, 3),	//East
+	glm::ivec4(0, 4, 2, 6)	//West
 };
 
 Block currentBlockType;
@@ -138,10 +139,9 @@ void Chunk::MakeCube(glm::ivec3 position)
 {
 	for (int i = 0; i < 6; i++)
 	{
-		if (GetNeighbor(position.x, position.y, position.z, static_cast<Direction>(i)) == 0)
+		if (GetNeighbor(position.x, position.y, position.z, static_cast<Direction>(i)) == AIR)
 			MakeFace(i, position);
 	}
-	//MakeFace(3, position);
 }
 
 void Chunk::MakeFace(int dir, glm::vec3 position)
@@ -156,33 +156,31 @@ void Chunk::MakeFace(int dir, glm::vec3 position)
 	indices.push_back(nVertices + 2);
 	indices.push_back(nVertices + 3);
 	indices.push_back(nVertices + 1);
-
-	//std::cout << nVertices << nVertices + 2 << nVertices + 1 << nVertices + 2 << nVertices + 3 << nVertices + 1 << std::endl;
 }
 
 void Chunk::GetFaceVertices(int dir, glm::vec3 position)
 {
 	glm::vec3 normal = normals[dir];
-	glm::vec3 color = glm::vec3(0, 0, 1);//GetColor(static_cast<Block>(GetCell(position.x, position.y, position.z)));
+	glm::vec3 color = GetColor(static_cast<Block>(GetCell(position.x, position.y, position.z)));
 
 	Vertex vertex1(
 		normalizedVertices[quads[dir].x] + position,
-		normal,
-		color
-	);
-	Vertex vertex2(
+		normal,							 
+		color							 
+	);									 
+	Vertex vertex2(						 
 		normalizedVertices[quads[dir].y] + position,
-		normal,
-		color
-	);
-	Vertex vertex3(
+		normal,							 
+		color							 
+	);									 
+	Vertex vertex3(						 
 		normalizedVertices[quads[dir].z] + position,
-		normal,
-		color
-	);
-	Vertex vertex4(
+		normal,							 
+		color							 
+	);									 
+	Vertex vertex4(						 
 		normalizedVertices[quads[dir].w] + position,
-		normal,
+		normal,							 
 		color
 		);
 
@@ -220,7 +218,8 @@ void Chunk::InitVoxelData()
 		{
 			for (unsigned int y = 0; y < ySize; y++)
 			{
-				if (y > z)
+				float height = (ySize - amplitude) +  glm::perlin(glm::vec2(x / (float)frequency, z / (float)frequency)) * amplitude;
+				if (y > height)
 					chunk[x][y][z] = AIR;
 				else
 					chunk[x][y][z] = GRASS;
