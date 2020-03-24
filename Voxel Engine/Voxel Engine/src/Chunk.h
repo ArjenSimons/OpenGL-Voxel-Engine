@@ -1,7 +1,7 @@
 #pragma once
 #include "glm/glm.hpp"
 #include "mesh.h"
-#include <vector>;
+#include <vector>
 
 enum Direction
 {
@@ -23,14 +23,15 @@ enum Block
 
 static Vertex vert;
 
-
 class Chunk
 {
 public:
-private:
 	static const unsigned int xSize = 32;
 	static const unsigned int ySize = 32;
 	static const unsigned int zSize = 32;
+private:
+	glm::vec3 m_Offset;
+
 	static const unsigned int amplitude = 10;
 	static const unsigned int frequency = 20;
 	unsigned char* chunk = new unsigned char[xSize * ySize * zSize];
@@ -38,7 +39,7 @@ private:
 	std::vector<Vertex> vertices{ vert };
 	std::vector<unsigned int> indices{ 1 };
 public:
-	Chunk();
+	Chunk(glm::vec2 offset);
 	~Chunk();
 	Mesh mesh;
 
@@ -52,4 +53,8 @@ private:
 	void GetFaceVertices(int dir, glm::vec3 position);
 	glm::vec3 GetColor(Block block) const;
 	void InitVoxelData();
+	glm::vec3 GetOffset(){ 
+		glm::vec3 newOffset = glm::vec3(m_Offset.x * xSize, m_Offset.y * ySize, 0);
+		return newOffset; 
+	};
 };

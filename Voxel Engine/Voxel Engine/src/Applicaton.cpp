@@ -1,13 +1,11 @@
 #include <GL/glew.h>
 #include "Window.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
 #include "Shader.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "Camera.h"
-#include "Mesh.h"
-#include "Chunk.h"
+//#include "Chunk.h"
+#include "ChunksManager.h"
 
 #include <iostream>
 #include <fstream>
@@ -21,7 +19,8 @@ int main(void)
 		Window window = Window(WindowProps());
 		glfwSetInputMode(window.GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-		Chunk chunks;
+		//Chunk chunks(glm::vec3(0, 0, 0));
+		ChunksManager chunksManager;
 
 		Shader shader("res/shaders/Basic.shader");
 
@@ -56,7 +55,7 @@ int main(void)
 			glClearColor(0.5f, 0.5f, 0.5f, 1);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			chunks.mesh.Draw();
+			chunksManager.Update(cam.GetPosition());
 
 			window.OnUpdate();
 			cam.ProcessInput(window.GetWindow());

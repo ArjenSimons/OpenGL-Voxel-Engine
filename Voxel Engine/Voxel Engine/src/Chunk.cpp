@@ -44,38 +44,17 @@ const glm::ivec4 quads[6] =
 
 Block currentBlockType;
 
-Chunk::Chunk()
-	:mesh(vertices, indices)
+Chunk::Chunk(glm::vec2 offset)
+	:mesh(vertices, indices), m_Offset(glm::vec3(offset, 0))
 {
-	vertices.clear();
-	Vertex vertex;
-	vertex.Position = glm::vec3(-1.0f, -1.0f, 0.0f);
-	vertex.Normal = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertex.Color = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertices.push_back(vertex);
-
-	Vertex vertex1;
-	vertex1.Position = glm::vec3(1.0f, -1.0f, 0.0f);
-	vertex1.Normal = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertex1.Color = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertices.push_back(vertex1);
-
-	Vertex vertex2;
-	vertex2.Position = glm::vec3(0.0f, 1.0f, 0.0f);
-	vertex2.Normal = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertex2.Color = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertices.push_back(vertex2);
-
-	indices.clear();
-	unsigned int i[3]{
-			0, 2, 1
-	};
-	indices.insert(indices.end(), i, i + 3);
-
 	mesh.Update(vertices, indices);
 
 	InitVoxelData();
 	GenerateMesh();
+
+	//std::cout << indices.size() << std::endl;
+	//std::cout << vertices.size() << std::endl;
+	std::cout << (int)GetCell(0, 0, 0) << std::endl;
 }
 
 Chunk::~Chunk()
@@ -165,22 +144,22 @@ void Chunk::GetFaceVertices(int dir, glm::vec3 position)
 	glm::vec3 color = GetColor(static_cast<Block>(GetCell(position.x, position.y, position.z)));
 
 	Vertex vertex1(
-		normalizedVertices[quads[dir].x] + position,
+		normalizedVertices[quads[dir].x] + position,// + GetOffset(),
 		normal,							 
 		color							 
 	);									 
 	Vertex vertex2(						 
-		normalizedVertices[quads[dir].y] + position,
+		normalizedVertices[quads[dir].y] + position,// + GetOffset(),
 		normal,							 
 		color							 
 	);									 
 	Vertex vertex3(						 
-		normalizedVertices[quads[dir].z] + position,
+		normalizedVertices[quads[dir].z] + position,// + GetOffset(),
 		normal,							 
 		color							 
 	);									 
 	Vertex vertex4(						 
-		normalizedVertices[quads[dir].w] + position,
+		normalizedVertices[quads[dir].w] + position,// + GetOffset(),
 		normal,							 
 		color
 		);
