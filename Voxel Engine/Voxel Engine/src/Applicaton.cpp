@@ -21,7 +21,7 @@ int main(void)
 		Window window = Window(WindowProps());
 		glfwSetInputMode(window.GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-		Chunk *chunks = new Chunk();
+		Chunk chunks;
 
 		Shader shader("res/shaders/Basic.shader");
 
@@ -56,13 +56,11 @@ int main(void)
 			glClearColor(0.5f, 0.5f, 0.5f, 1);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			chunks->mesh.Draw();
+			chunks.mesh.Draw();
 
 			window.OnUpdate();
 			cam.ProcessInput(window.GetWindow());
 		}
-
-		delete chunks;
 	}
 
 	glfwTerminate();

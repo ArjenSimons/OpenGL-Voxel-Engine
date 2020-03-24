@@ -80,12 +80,13 @@ Chunk::Chunk()
 
 Chunk::~Chunk()
 {
+	delete[] chunk;
 }
 
 
 unsigned char Chunk::GetCell(int x, int y, int z) const
 {
-	return chunk[x][y][z];
+	return *(chunk + x * ySize * zSize + y * zSize + z);
 }
 
 unsigned char Chunk::GetNeighbor(int x, int y, int z, Direction dir) const
@@ -220,10 +221,12 @@ void Chunk::InitVoxelData()
 			{
 				float height = (ySize - amplitude) +  glm::perlin(glm::vec2(x / (float)frequency, z / (float)frequency)) * amplitude;
 				if (y > height)
-					chunk[x][y][z] = AIR;
+					*(chunk + x * ySize * zSize + y * zSize + z) = AIR;
 				else
-					chunk[x][y][z] = GRASS;
+					*(chunk + x * ySize * zSize + y * zSize + z) = GRASS;
 			}
 		}
 	}
+
+
 }
