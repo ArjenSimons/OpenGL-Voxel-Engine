@@ -227,6 +227,4 @@ void Chunk::InitVoxelData()
 			}
 		}
 	}
-
-
 }

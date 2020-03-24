@@ -28,10 +28,10 @@ class Chunk
 {
 public:
 private:
-	static const unsigned int xSize = 200;
-	static const unsigned int ySize = 50;
-	static const unsigned int zSize = 200;
-	static const unsigned int amplitude = 20;
+	static const unsigned int xSize = 32;
+	static const unsigned int ySize = 32;
+	static const unsigned int zSize = 32;
+	static const unsigned int amplitude = 10;
 	static const unsigned int frequency = 20;
 	unsigned char* chunk = new unsigned char[xSize * ySize * zSize];
 
