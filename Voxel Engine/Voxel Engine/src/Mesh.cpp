@@ -40,10 +40,11 @@ void Mesh::Update(const std::vector<Vertex>& vertices, const std::vector<unsigne
 	IBO.Update(&indices[0], indices.size());
 }
 
-void Mesh::Draw() const
+void Mesh::Draw()
 {
 	if (m_Indices.size() > 1 && m_Vertices.size() > 1)
 	{
+		SetAttribPointers();
 		VBO.Bind();
 		IBO.Bind();
 		glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, nullptr);

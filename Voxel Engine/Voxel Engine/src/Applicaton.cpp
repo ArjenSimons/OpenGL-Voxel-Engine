@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "Camera.h"
-//#include "Chunk.h"
+#include "Chunk.h"
 #include "ChunksManager.h"
 
 #include <iostream>
@@ -19,15 +19,16 @@ int main(void)
 		Window window = Window(WindowProps());
 		glfwSetInputMode(window.GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-		//Chunk chunks(glm::vec3(0, 0, 0));
+
 		ChunksManager chunksManager;
+		//Chunk *chunk = new Chunk(glm::vec2(0, 0));
 
 		Shader shader("res/shaders/Basic.shader");
 
 		shader.SetVec3("lightDir", glm::vec3(-0.5f, -0.9f, 0.3f));
 
 		Camera cam(
-			glm::vec3(0, 60, 5),
+			glm::vec3(0, 60, 0),
 			glm::vec3(0, 0, -1),
 			glm::vec3(0, 1, 0)
 		);
@@ -42,11 +43,13 @@ int main(void)
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glCullFace(GL_BACK);
 		glEnable(GL_CULL_FACE);
+
+		//shader.Bind();
+
 		while (window.IsRunning())
 		{
 			//rotate cube
 			//model = glm::rotate(model, glm::radians(-0.01f), glm::vec3(1, 0.5f, 1));
-			shader.Bind();
 			glm::mat4 mvp = projection * cam.GetViewMatrix() * model;
 			shader.SetMat4("mvp", mvp);
 			shader.SetMat4("model", model);
@@ -56,6 +59,7 @@ int main(void)
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			chunksManager.Update(cam.GetPosition());
+			//chunk->mesh.Draw();
 
 			window.OnUpdate();
 			cam.ProcessInput(window.GetWindow());

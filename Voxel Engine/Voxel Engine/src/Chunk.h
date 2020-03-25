@@ -34,7 +34,7 @@ private:
 
 	static const unsigned int amplitude = 10;
 	static const unsigned int frequency = 20;
-	unsigned char* chunk = new unsigned char[xSize * ySize * zSize];
+	unsigned char chunk[xSize][ySize][zSize];
 
 	std::vector<Vertex> vertices{ vert };
 	std::vector<unsigned int> indices{ 1 };
@@ -53,8 +53,4 @@ private:
 	void GetFaceVertices(int dir, glm::vec3 position);
 	glm::vec3 GetColor(Block block) const;
 	void InitVoxelData();
-	glm::vec3 GetOffset(){ 
-		glm::vec3 newOffset = glm::vec3(m_Offset.x * xSize, m_Offset.y * ySize, 0);
-		return newOffset; 
-	};
 };

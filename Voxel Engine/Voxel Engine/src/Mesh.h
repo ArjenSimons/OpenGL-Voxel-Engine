@@ -30,7 +30,7 @@ public:
 	~Mesh();
 
 	void Update(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
-	void Draw() const;
+	void Draw();
 	void Clear();
 private:
 	void SetAttribPointers();

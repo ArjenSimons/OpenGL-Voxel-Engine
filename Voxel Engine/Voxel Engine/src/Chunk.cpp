@@ -45,7 +45,7 @@ const glm::ivec4 quads[6] =
 Block currentBlockType;
 
 Chunk::Chunk(glm::vec2 offset)
-	:mesh(vertices, indices), m_Offset(glm::vec3(offset, 0))
+	:mesh(vertices, indices), m_Offset(glm::vec3(offset.x * xSize, 0, offset.y * zSize))
 {
 	mesh.Update(vertices, indices);
 
@@ -54,18 +54,20 @@ Chunk::Chunk(glm::vec2 offset)
 
 	//std::cout << indices.size() << std::endl;
 	//std::cout << vertices.size() << std::endl;
-	std::cout << (int)GetCell(0, 0, 0) << std::endl;
+	//std::cout << (int)GetCell(0, 0, 0) << std::endl;
+
+	std::cout << m_Offset.x << " " << m_Offset.z << std::endl;
 }
 
 Chunk::~Chunk()
 {
-	delete[] chunk;
+	//delete[] chunk;
 }
 
 
 unsigned char Chunk::GetCell(int x, int y, int z) const
 {
-	return *(chunk + x * ySize * zSize + y * zSize + z);
+	return chunk[x][y][z];//*(chunk + x * ySize * zSize + y * zSize + z);
 }
 
 unsigned char Chunk::GetNeighbor(int x, int y, int z, Direction dir) const
@@ -144,22 +146,22 @@ void Chunk::GetFaceVertices(int dir, glm::vec3 position)
 	glm::vec3 color = GetColor(static_cast<Block>(GetCell(position.x, position.y, position.z)));
 
 	Vertex vertex1(
-		normalizedVertices[quads[dir].x] + position,// + GetOffset(),
+		normalizedVertices[quads[dir].x] + position + m_Offset,
 		normal,							 
 		color							 
 	);									 
 	Vertex vertex2(						 
-		normalizedVertices[quads[dir].y] + position,// + GetOffset(),
+		normalizedVertices[quads[dir].y] + position + m_Offset,
 		normal,							 
 		color							 
 	);									 
 	Vertex vertex3(						 
-		normalizedVertices[quads[dir].z] + position,// + GetOffset(),
+		normalizedVertices[quads[dir].z] + position + m_Offset,
 		normal,							 
 		color							 
 	);									 
 	Vertex vertex4(						 
-		normalizedVertices[quads[dir].w] + position,// + GetOffset(),
+		normalizedVertices[quads[dir].w] + position + m_Offset,
 		normal,							 
 		color
 		);
@@ -198,11 +200,18 @@ void Chunk::InitVoxelData()
 		{
 			for (unsigned int y = 0; y < ySize; y++)
 			{
-				float height = (ySize - amplitude) +  glm::perlin(glm::vec2(x / (float)frequency, z / (float)frequency)) * amplitude;
+				float height = (ySize - amplitude) +  glm::perlin(glm::vec2(m_Offset.x + x / (float)frequency, m_Offset.z + z / (float)frequency)) * amplitude;
 				if (y > height)
-					*(chunk + x * ySize * zSize + y * zSize + z) = AIR;
+				{
+					chunk[x][y][z] = AIR;
+					//*(chunk + x * ySize * zSize + y * zSize + z) = AIR;
+				}
 				else
-					*(chunk + x * ySize * zSize + y * zSize + z) = GRASS;
+				{
+					chunk[x][y][z] = GRASS;
+
+					//*(chunk + x * ySize * zSize + y * zSize + z) = GRASS;
+				}
 			}
 		}
 	}

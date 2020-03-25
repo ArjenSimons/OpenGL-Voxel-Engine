@@ -2,33 +2,36 @@
 #include <glm/glm.hpp>
 #include <unordered_map>
 #include <map>
+#include <list>
 #include "Chunk.h"
+#include "Shader.h"
 
 struct KeyFuncs
 {
-	size_t operator()(const glm::vec2& k)const
+	size_t operator()(const glm::ivec2& k)const
 	{
 		return std::hash<int>()(k.x) ^ std::hash<int>()(k.y);
 	}
 
-	bool operator()(const glm::vec2& a, const glm::vec2& b)const
+	bool operator()(const glm::ivec2& a, const glm::ivec2& b)const
 	{
 		return a.x == b.x && a.y == b.y;
 	}
 };
 
-typedef std::unordered_map<glm::vec2, Chunk, KeyFuncs, KeyFuncs> MyMap;
+typedef std::unordered_map<glm::ivec2, Chunk*, KeyFuncs, KeyFuncs> MyMap;
 
 class ChunksManager
 {
 private:
 	const unsigned int maxViewDist = 80;
 	int chunksVisibleInViewDist;
+	unsigned int chunkSize = Chunk::xSize;
 
 	MyMap chunks;
-	glm::vec2 playerChunkCoord;
+	glm::ivec2 playerChunkCoord;
+	Chunk* chunk;
 
-	unsigned int chunkSize = Chunk::xSize;
 public:
 	ChunksManager();
 	~ChunksManager();
