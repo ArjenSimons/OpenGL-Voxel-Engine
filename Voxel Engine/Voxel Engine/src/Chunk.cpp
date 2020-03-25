@@ -1,6 +1,7 @@
 #include "Chunk.h"
 #include <iostream>
 #include "glm/gtc/noise.hpp"
+#include <GLFW/glfw3.h>
 
 const glm::ivec3 directionOffset[6]{
 	glm::ivec3( 0,  1,  0),	//Up
@@ -49,8 +50,23 @@ Chunk::Chunk(glm::vec2 offset)
 {
 	mesh.Update(vertices, indices);
 
+	float startTime = glfwGetTime();
+
 	InitVoxelData();
+
+	float midTime = glfwGetTime();
+	float initTime = midTime - startTime;
+
 	GenerateMesh();
+	float endTime = glfwGetTime();
+
+	float meshTime = endTime - midTime;
+
+	float totalTime = endTime - startTime;
+
+	std::cout << "InitTime: " << initTime << std::endl;
+	std::cout << "MeshTime: " << meshTime << std::endl;
+	std::cout << "TotalTime: " << totalTime << std::endl;
 
 	//std::cout << indices.size() << std::endl;
 	//std::cout << vertices.size() << std::endl;
@@ -193,24 +209,26 @@ glm::vec3 Chunk::GetColor(Block block) const
 
 void Chunk::InitVoxelData()
 {
+
+	float hightOffset = ySize - amplitude;
 	for (unsigned int x = 0; x < xSize; x++)
 	{
 		for (unsigned int z = 0; z < zSize; z++)
 		{
-			for (unsigned int y = 0; y < ySize; y++)
+			float height = hightOffset + glm::perlin(glm::vec2((m_Offset.x + x) / (float)frequency, (m_Offset.z + z) / (float)frequency)) * amplitude;
+
+			for (unsigned int y = 0; y <= height; y++)
 			{
-				float height = (ySize - amplitude) + glm::perlin(glm::vec2((m_Offset.x + x) / (float)frequency, (m_Offset.z + z) / (float)frequency)) * amplitude;
-				if (y > height)
-				{
-					chunk[x][y][z] = AIR;
-					//*(chunk + x * ySize * zSize + y * zSize + z) = AIR;
-				}
-				else
-				{
+				//if (y > height)
+				//{
+				//	chunk[x][y][z] = AIR;
+				//}
+				//else
+				//{
 					chunk[x][y][z] = GRASS;
 
 					//*(chunk + x * ySize * zSize + y * zSize + z) = GRASS;
-				}
+				//}
 			}
 		}
 	}
