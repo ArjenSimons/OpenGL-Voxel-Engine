@@ -44,7 +44,7 @@ int main(void)
 		glCullFace(GL_BACK);
 		glEnable(GL_CULL_FACE);
 
-		//shader.Bind();
+		shader.Bind();
 
 		while (window.IsRunning())
 		{

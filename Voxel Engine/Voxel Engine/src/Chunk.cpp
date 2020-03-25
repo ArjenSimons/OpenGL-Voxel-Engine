@@ -200,18 +200,18 @@ void Chunk::InitVoxelData()
 		{
 			for (unsigned int y = 0; y < ySize; y++)
 			{
-				float height = (ySize - amplitude) +  glm::perlin(glm::vec2(m_Offset.x + x / (float)frequency, m_Offset.z + z / (float)frequency)) * amplitude;
-				if (y > height)
-				{
-					chunk[x][y][z] = AIR;
+				//float height = (ySize - amplitude) +  glm::perlin(glm::vec2(m_Offset.x + x / (float)frequency, m_Offset.z + z / (float)frequency)) * amplitude;
+				//if (y > height)
+				//{
+				//	chunk[x][y][z] = AIR;
 					//*(chunk + x * ySize * zSize + y * zSize + z) = AIR;
-				}
-				else
-				{
+				//}
+				//else
+				//{
 					chunk[x][y][z] = GRASS;
 
 					//*(chunk + x * ySize * zSize + y * zSize + z) = GRASS;
-				}
+				//}
 			}
 		}
 	}

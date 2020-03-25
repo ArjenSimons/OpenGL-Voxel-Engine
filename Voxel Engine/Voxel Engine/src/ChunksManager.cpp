@@ -2,11 +2,11 @@
 #include <iostream>
 
 ChunksManager::ChunksManager()
-	:chunk(new Chunk(glm::vec2(0, 0)))
+	//:chunk(new Chunk(glm::vec2(0, 0)))
 {
 	chunksVisibleInViewDist = maxViewDist / chunkSize;
 	
-	chunks.insert(std::pair<glm::vec2, Chunk*>(glm::vec2(0, 0),  chunk));
+	//chunks.insert(std::pair<glm::vec2, Chunk*>(glm::vec2(0, 0),  chunk));
 }
 
 ChunksManager::~ChunksManager()
@@ -22,11 +22,11 @@ ChunksManager::~ChunksManager()
 void ChunksManager::Update(glm::vec3 playerPos)
 {
 	playerChunkCoord.x = playerPos.x / chunkSize;
-	playerChunkCoord.y = playerPos.y / chunkSize;
+	playerChunkCoord.y = playerPos.z / chunkSize;
 
 	for (int zOffset = -chunksVisibleInViewDist; zOffset <= chunksVisibleInViewDist; zOffset++)
 	{
-		for (int xOffset = -chunksVisibleInViewDist; xOffset <= chunksVisibleInViewDist; xOffset)
+		for (int xOffset = -chunksVisibleInViewDist; xOffset <= chunksVisibleInViewDist; xOffset++)
 		{
 			glm::ivec2 chunkCoord = glm::ivec2(xOffset + playerChunkCoord.x, zOffset + playerChunkCoord.y);
 			if (chunks.count(chunkCoord) == 1)
