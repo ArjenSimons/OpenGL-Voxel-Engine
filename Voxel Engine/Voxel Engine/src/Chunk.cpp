@@ -142,27 +142,26 @@ void Chunk::MakeFace(int dir, glm::vec3 position)
 
 void Chunk::GetFaceVertices(int dir, glm::vec3 position)
 {
-	glm::vec3 normal = normals[dir];
 	glm::vec3 color = GetColor(static_cast<Block>(GetCell(position.x, position.y, position.z)));
 
 	Vertex vertex1(
 		normalizedVertices[quads[dir].x] + position + m_Offset,
-		normal,							 
+		normals[dir],							 
 		color							 
 	);									 
 	Vertex vertex2(						 
 		normalizedVertices[quads[dir].y] + position + m_Offset,
-		normal,							 
+		normals[dir],
 		color							 
 	);									 
 	Vertex vertex3(						 
 		normalizedVertices[quads[dir].z] + position + m_Offset,
-		normal,							 
+		normals[dir],
 		color							 
 	);									 
 	Vertex vertex4(						 
 		normalizedVertices[quads[dir].w] + position + m_Offset,
-		normal,							 
+		normals[dir],
 		color
 		);
 

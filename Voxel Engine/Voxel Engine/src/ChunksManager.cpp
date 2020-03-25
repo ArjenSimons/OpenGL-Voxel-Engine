@@ -59,7 +59,7 @@ void ChunksManager::Update(glm::vec3 playerPos)
 void ChunksManager::RenderChunks(glm::vec2 playerCoord)
 {
 	MyMap::iterator itr;
-	std::cout << "viewdist  " << playerCoord.x << std::endl;
+	//std::cout << "viewdist  " << playerCoord.x << std::endl;
 
 	for (itr = chunks.begin(); itr != chunks.end(); ++itr)
 	{
