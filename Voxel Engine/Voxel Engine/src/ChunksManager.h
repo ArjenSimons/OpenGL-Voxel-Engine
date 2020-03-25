@@ -27,10 +27,11 @@ private:
 	const unsigned int maxViewDist = 30;
 	int chunksVisibleInViewDist;
 	unsigned int chunkSize = Chunk::xSize;
-
-	MyMap chunks;
 	glm::ivec2 playerChunkCoord;
 
+	MyMap chunks;
+	std::list<glm::ivec2> visibleChunks;
+	
 public:
 	ChunksManager();
 	~ChunksManager();
