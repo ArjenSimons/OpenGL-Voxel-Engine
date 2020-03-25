@@ -56,7 +56,7 @@ Chunk::Chunk(glm::vec2 offset)
 	//std::cout << vertices.size() << std::endl;
 	//std::cout << (int)GetCell(0, 0, 0) << std::endl;
 
-	std::cout << m_Offset.x << " " << m_Offset.z << std::endl;
+	//std::cout << m_Offset.x << " " << m_Offset.z << std::endl;
 }
 
 Chunk::~Chunk()
@@ -185,7 +185,7 @@ glm::vec3 Chunk::GetColor(Block block) const
 	switch (block)
 	{
 	case (GRASS):
-		return glm::vec3(0, 0, 1);
+		return glm::vec3(226, 200, 147);
 		break;
 	default:
 		return glm::vec3(0, 0, 1);
@@ -200,18 +200,18 @@ void Chunk::InitVoxelData()
 		{
 			for (unsigned int y = 0; y < ySize; y++)
 			{
-				//float height = (ySize - amplitude) +  glm::perlin(glm::vec2(m_Offset.x + x / (float)frequency, m_Offset.z + z / (float)frequency)) * amplitude;
-				//if (y > height)
-				//{
-				//	chunk[x][y][z] = AIR;
+				float height = (ySize - amplitude) + glm::perlin(glm::vec2((m_Offset.x + x) / (float)frequency, (m_Offset.z + z) / (float)frequency)) * amplitude;
+				if (y > height)
+				{
+					chunk[x][y][z] = AIR;
 					//*(chunk + x * ySize * zSize + y * zSize + z) = AIR;
-				//}
-				//else
-				//{
+				}
+				else
+				{
 					chunk[x][y][z] = GRASS;
 
 					//*(chunk + x * ySize * zSize + y * zSize + z) = GRASS;
-				//}
+				}
 			}
 		}
 	}

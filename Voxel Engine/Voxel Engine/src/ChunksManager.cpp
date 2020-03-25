@@ -53,14 +53,21 @@ void ChunksManager::Update(glm::vec3 playerPos)
 	//}
 
 
-	RenderChunks();
+	RenderChunks(playerChunkCoord);
 }
 
-void ChunksManager::RenderChunks()
+void ChunksManager::RenderChunks(glm::vec2 playerCoord)
 {
 	MyMap::iterator itr;
+	std::cout << "viewdist  " << playerCoord.x << std::endl;
+
 	for (itr = chunks.begin(); itr != chunks.end(); ++itr)
 	{
-		itr->second->mesh.Draw();
+		//std::cout << itr->first.x << std::endl;
+		if (itr->first.x <= playerChunkCoord.x + chunksVisibleInViewDist && itr->first.x >= playerChunkCoord.x - chunksVisibleInViewDist
+			&& itr->first.y <= playerChunkCoord.y + chunksVisibleInViewDist && itr->first.y >= playerChunkCoord .y - chunksVisibleInViewDist)
+		{
+			itr->second->mesh.Draw();
+		}
 	}
 }

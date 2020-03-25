@@ -24,7 +24,7 @@ typedef std::unordered_map<glm::ivec2, Chunk*, KeyFuncs, KeyFuncs> MyMap;
 class ChunksManager
 {
 private:
-	const unsigned int maxViewDist = 30;
+	const unsigned int maxViewDist = 100;
 	int chunksVisibleInViewDist;
 	unsigned int chunkSize = Chunk::xSize;
 	glm::ivec2 playerChunkCoord;
@@ -38,5 +38,5 @@ public:
 
 	void Update(glm::vec3 playerPos);
 private:
-	void RenderChunks();
+	void RenderChunks(glm::vec2 playerCoord);
 };
