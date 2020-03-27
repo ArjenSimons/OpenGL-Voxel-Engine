@@ -3,6 +3,7 @@
 #include <vector>
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include <iostream>
 
 struct Vertex
 {
@@ -15,6 +16,12 @@ struct Vertex
 		: Position(position), Normal(normal), Color(color)
 	{
 	}
+
+	//Vertex(const Vertex& vertex)
+	//	:Position(vertex.Position), Normal(vertex.Normal), Color(vertex.Color)
+	//{
+	//	//std::cout << "Vertex Copied!" << std::endl;
+	//}
 };
 
 class Mesh
@@ -30,7 +37,7 @@ public:
 	~Mesh();
 
 	void Update(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
-	void Draw() const;
+	void Draw();
 	void Clear();
 private:
 	void SetAttribPointers();

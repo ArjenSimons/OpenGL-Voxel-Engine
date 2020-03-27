@@ -1,35 +1,36 @@
 #include "Chunk.h"
 #include <iostream>
 #include "glm/gtc/noise.hpp"
+#include <GLFW/glfw3.h>
 
 const glm::ivec3 directionOffset[6]{
-	glm::ivec3( 0,  1,  0),	//Up
-	glm::ivec3( 0, -1,  0),	//Down
-	glm::ivec3( 0,  0,  1),	//South
-	glm::ivec3( 0,  0, -1),	//North
-	glm::ivec3( 1,  0,  0),	//East
+	glm::ivec3(0,  1,  0),	//Up
+	glm::ivec3(0, -1,  0),	//Down
+	glm::ivec3(0,  0,  1),	//South
+	glm::ivec3(0,  0, -1),	//North
+	glm::ivec3(1,  0,  0),	//East
 	glm::ivec3(-1,  0,  0)	//West
 };
 
 const glm::vec3 normals[6]{
-	glm::vec3( 0,  1,  0),
-	glm::vec3( 0, -1,  0),
-	glm::vec3( 0,  0,  1),
-	glm::vec3( 0,  0, -1),
-	glm::vec3( 1,  0,  0),
+	glm::vec3(0,  1,  0),
+	glm::vec3(0, -1,  0),
+	glm::vec3(0,  0,  1),
+	glm::vec3(0,  0, -1),
+	glm::vec3(1,  0,  0),
 	glm::vec3(-1,  0,  0)
 };
 
 const glm::vec3 normalizedVertices[8] =
 {
 	glm::vec3(-0.5f, -0.5f,  0.5f),
-	glm::vec3( 0.5f, -0.5f,  0.5f),
+	glm::vec3(0.5f, -0.5f,  0.5f),
 	glm::vec3(-0.5f,  0.5f,  0.5f),
-	glm::vec3( 0.5f,  0.5f,  0.5f),
+	glm::vec3(0.5f,  0.5f,  0.5f),
 	glm::vec3(-0.5f, -0.5f, -0.5f),
-	glm::vec3( 0.5f, -0.5f, -0.5f),
+	glm::vec3(0.5f, -0.5f, -0.5f),
 	glm::vec3(-0.5f,  0.5f, -0.5f),
-	glm::vec3( 0.5f,  0.5f, -0.5f)
+	glm::vec3(0.5f,  0.5f, -0.5f)
 };
 
 const glm::ivec4 quads[6] =
@@ -42,50 +43,50 @@ const glm::ivec4 quads[6] =
 	glm::ivec4(0, 4, 2, 6)	//West
 };
 
-Block currentBlockType;
-
-Chunk::Chunk()
-	:mesh(vertices, indices)
+Chunk::Chunk(glm::vec2 offset)
+	:mesh(vertices, indices), m_Offset(glm::vec3(offset.x * xSize, 0, offset.y * zSize))
 {
-	vertices.clear();
-	Vertex vertex;
-	vertex.Position = glm::vec3(-1.0f, -1.0f, 0.0f);
-	vertex.Normal = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertex.Color = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertices.push_back(vertex);
+	//std::cout << "startCopy?" << std::endl;
 
-	Vertex vertex1;
-	vertex1.Position = glm::vec3(1.0f, -1.0f, 0.0f);
-	vertex1.Normal = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertex1.Color = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertices.push_back(vertex1);
+	//mesh.Update(vertices, indices);
 
-	Vertex vertex2;
-	vertex2.Position = glm::vec3(0.0f, 1.0f, 0.0f);
-	vertex2.Normal = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertex2.Color = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertices.push_back(vertex2);
-
-	indices.clear();
-	unsigned int i[3]{
-			0, 2, 1
-	};
-	indices.insert(indices.end(), i, i + 3);
-
-	mesh.Update(vertices, indices);
+	//float startTime = glfwGetTime();
 
 	InitVoxelData();
+	//std::cout << "afterInit" << std::endl;
+
+	//float midTime = glfwGetTime();
+	//float initTime = midTime - startTime;
+
 	GenerateMesh();
+	//float endTime = glfwGetTime();
+
+	//float meshTime = endTime - midTime;
+
+	//float totalTime = endTime - startTime;
+
+	//std::cout << "InitTime: " << initTime << std::endl;
+	//std::cout << "MeshTime: " << meshTime << std::endl;
+	//std::cout << "TotalTime: " << totalTime << std::endl;
+	//std::cout << "vertices size: " << vertices.size() << std::endl;
+	//std::cout << "indices size: " << indices.size() << std::endl;
+
+	//std::cout << indices.size() << std::endl;
+	//std::cout << vertices.size() << std::endl;
+	//std::cout << (int)GetCell(0, 0, 0) << std::endl;
+
+	//std::cout << m_Offset.x << " " << m_Offset.z << std::endl;
 }
 
 Chunk::~Chunk()
 {
+	//delete &mesh;
 }
 
 
 unsigned char Chunk::GetCell(int x, int y, int z) const
 {
-	return chunk[x][y][z];
+	return chunk[x][y][z];//*(chunk + x * ySize * zSize + y * zSize + z);
 }
 
 unsigned char Chunk::GetNeighbor(int x, int y, int z, Direction dir) const
@@ -116,26 +117,38 @@ void Chunk::GenerateMesh()
 {
 	vertices.clear();
 	indices.clear();
+	//std::cout << "inside generate mesh" << std::endl;
+	vertices.reserve(25000);
+	indices.reserve(35000);
+	//float startTime = glfwGetTime();
+
+
 	for (unsigned int x = 0; x < xSize; x++)
 	{
 		for (unsigned int z = 0; z < zSize; z++)
 		{
 			for (unsigned int y = 0; y < ySize; y++)
 			{
-				currentBlockType = static_cast<Block>(GetCell(x, y, z));
-
-				if (currentBlockType == AIR)
+				if (static_cast<Block>(GetCell(x, y, z)) == AIR)
 					continue;
 
-				MakeCube(glm::ivec3(x, y, z));
+				glm::vec3 pos = glm::vec3(x, y, z);
+				MakeCube(pos);
 			}
 		}
 	}
 
+	//float midTime = glfwGetTime();
+	//std::cout << "generateMeshTime " << midTime - startTime << std::endl;
+
+
 	mesh.Update(vertices, indices);
+	//float endTime = glfwGetTime();
+	//std::cout << "updateMeshTime " << endTime - midTime << std::endl;
+
 }
 
-void Chunk::MakeCube(glm::ivec3 position)
+void Chunk::MakeCube(glm::vec3 &position)
 {
 	for (int i = 0; i < 6; i++)
 	{
@@ -144,58 +157,42 @@ void Chunk::MakeCube(glm::ivec3 position)
 	}
 }
 
-void Chunk::MakeFace(int dir, glm::vec3 position)
+void Chunk::MakeFace(int &dir, glm::vec3 &position)
 {
+	//std::cout << "start inside makeFace" << std::endl;
 	int nVertices = vertices.size();
 	//Vertex* faceVertices = GetFaceVertices(dir, position);
 	//vertices.insert(vertices.end(), faceVertices, faceVertices + 4);
+
 	GetFaceVertices(dir, position);
-	indices.push_back(nVertices);
-	indices.push_back(nVertices + 2);
-	indices.push_back(nVertices + 1);
-	indices.push_back(nVertices + 2);
-	indices.push_back(nVertices + 3);
-	indices.push_back(nVertices + 1);
+	//std::cout << "mid inside makeFace" << std::endl;
+	indices.emplace_back(nVertices);
+	indices.emplace_back(nVertices + 2);
+	indices.emplace_back(nVertices + 1);
+	indices.emplace_back(nVertices + 2);
+	indices.emplace_back(nVertices + 3);
+	indices.emplace_back(nVertices + 1);
 }
 
-void Chunk::GetFaceVertices(int dir, glm::vec3 position)
+void Chunk::GetFaceVertices(int &dir, glm::vec3 &position)
 {
-	glm::vec3 normal = normals[dir];
 	glm::vec3 color = GetColor(static_cast<Block>(GetCell(position.x, position.y, position.z)));
-
-	Vertex vertex1(
-		normalizedVertices[quads[dir].x] + position,
-		normal,							 
-		color							 
-	);									 
-	Vertex vertex2(						 
-		normalizedVertices[quads[dir].y] + position,
-		normal,							 
-		color							 
-	);									 
-	Vertex vertex3(						 
-		normalizedVertices[quads[dir].z] + position,
-		normal,							 
-		color							 
-	);									 
-	Vertex vertex4(						 
-		normalizedVertices[quads[dir].w] + position,
-		normal,							 
-		color
-		);
-
-	vertices.push_back(vertex1);
-	vertices.push_back(vertex2);
-	vertices.push_back(vertex3);
-	vertices.push_back(vertex4);
-
-	/*std::cout << faceVetices[0].Position.x << " " << faceVetices[0].Position.y << " " << faceVetices[0].Position.z << std::endl;
-	std::cout << faceVetices[1].Position.x << " " << faceVetices[1].Position.y << " " << faceVetices[1].Position.z << std::endl;
-	std::cout << faceVetices[2].Position.x << " " << faceVetices[2].Position.y << " " << faceVetices[2].Position.z << std::endl;
-	std::cout << faceVetices[3].Position.x << " " << faceVetices[3].Position.y << " " << faceVetices[3].Position.z << std::endl;*/
-
-
-//	return faceVetices;
+	vertices.emplace_back(
+		normalizedVertices[quads[dir].x] + position + m_Offset,
+		normals[dir],
+		color);
+	vertices.emplace_back(
+		normalizedVertices[quads[dir].y] + position + m_Offset,
+		normals[dir],
+		color);
+	vertices.emplace_back(
+		normalizedVertices[quads[dir].z] + position + m_Offset,
+		normals[dir],
+		color);
+	vertices.emplace_back(
+		normalizedVertices[quads[dir].w] + position + m_Offset,
+		normals[dir],
+		color);
 }
 
 glm::vec3 Chunk::GetColor(Block block) const
@@ -203,7 +200,7 @@ glm::vec3 Chunk::GetColor(Block block) const
 	switch (block)
 	{
 	case (GRASS):
-		return glm::vec3(0, 0, 1);
+		return glm::vec3(226, 200, 147);
 		break;
 	default:
 		return glm::vec3(0, 0, 1);
@@ -212,17 +209,17 @@ glm::vec3 Chunk::GetColor(Block block) const
 
 void Chunk::InitVoxelData()
 {
+
+	float hightOffset = ySize - amplitude;
 	for (unsigned int x = 0; x < xSize; x++)
 	{
 		for (unsigned int z = 0; z < zSize; z++)
 		{
-			for (unsigned int y = 0; y < ySize; y++)
+			float height = hightOffset + glm::perlin(glm::vec2((m_Offset.x + x) / (float)frequency, (m_Offset.z + z) / (float)frequency)) * amplitude;
+
+			for (unsigned int y = 0; y <= height; y++)
 			{
-				float height = (ySize - amplitude) +  glm::perlin(glm::vec2(x / (float)frequency, z / (float)frequency)) * amplitude;
-				if (y > height)
-					chunk[x][y][z] = AIR;
-				else
-					chunk[x][y][z] = GRASS;
+				chunk[x][y][z] = GRASS;
 			}
 		}
 	}

@@ -12,7 +12,6 @@ Mesh::Mesh(const std::vector<Vertex>& vertices , const std::vector<unsigned int>
 	  VBO(&vertices[0], vertices.size() * sizeof(Vertex)),
 	  IBO(&indices[0], indices.size())
 {
-
 	SetAttribPointers();
 }
 
@@ -40,10 +39,17 @@ void Mesh::Update(const std::vector<Vertex>& vertices, const std::vector<unsigne
 	IBO.Update(&indices[0], indices.size());
 }
 
-void Mesh::Draw() const
+void Mesh::Draw()
 {
-	if (m_Indices.size() > 1 && m_Vertices.size() > 1)
+	if (IBO.GetCount() > 0)
+	{
+		SetAttribPointers();
+		VBO.Bind();
+		IBO.Bind();
+		if ( glGetError() != 0)
+			std::cout << glGetError() << std::endl;
 		glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, nullptr);
+	}
 }
 
 void Mesh::Clear()

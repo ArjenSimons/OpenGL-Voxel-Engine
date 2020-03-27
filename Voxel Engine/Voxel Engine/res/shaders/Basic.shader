@@ -34,7 +34,7 @@ in vec3 objectColor;
 
 void main()
 {
-	vec3 objColor = vec3(0.0f, 0.0f, 1.0f);
+	vec3 objColor = vec3(0.9f, 0.8f, 0.5f);
 	vec3 result = objColor * diff;
 	result = result;
 	color = vec4(result, 1.0f);
