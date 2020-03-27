@@ -19,9 +19,7 @@ int main(void)
 		Window window = Window(WindowProps());
 		glfwSetInputMode(window.GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-
 		ChunksManager chunksManager;
-		//Chunk *chunk = new Chunk(glm::vec2(0, 0));
 
 		Shader shader("res/shaders/Basic.shader");
 
@@ -49,7 +47,6 @@ int main(void)
 		while (window.IsRunning())
 		{
 			//rotate cube
-			//model = glm::rotate(model, glm::radians(-0.01f), glm::vec3(1, 0.5f, 1));
 			glm::mat4 mvp = projection * cam.GetViewMatrix() * model;
 			shader.SetMat4("mvp", mvp);
 			shader.SetMat4("model", model);
@@ -59,7 +56,6 @@ int main(void)
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			chunksManager.Update(cam.GetPosition());
-			//chunk->mesh.Draw();
 
 			window.OnUpdate();
 			cam.ProcessInput(window.GetWindow());

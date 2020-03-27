@@ -48,9 +48,9 @@ public:
 private:
 	bool CellIsInMap(glm::ivec3 position) const;
 	void GenerateMesh();
-	void MakeCube(glm::ivec3 position);
-	void MakeFace(int dir, glm::vec3 position);
-	void GetFaceVertices(int dir, glm::vec3 position);
+	void MakeCube(glm::vec3 &position);
+	void MakeFace(int &dir, glm::vec3 &position);
+	void GetFaceVertices(int &dir, glm::vec3 &position);
 	glm::vec3 GetColor(Block block) const;
 	void InitVoxelData();
 };

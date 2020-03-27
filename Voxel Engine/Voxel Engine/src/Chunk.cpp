@@ -4,33 +4,33 @@
 #include <GLFW/glfw3.h>
 
 const glm::ivec3 directionOffset[6]{
-	glm::ivec3( 0,  1,  0),	//Up
-	glm::ivec3( 0, -1,  0),	//Down
-	glm::ivec3( 0,  0,  1),	//South
-	glm::ivec3( 0,  0, -1),	//North
-	glm::ivec3( 1,  0,  0),	//East
+	glm::ivec3(0,  1,  0),	//Up
+	glm::ivec3(0, -1,  0),	//Down
+	glm::ivec3(0,  0,  1),	//South
+	glm::ivec3(0,  0, -1),	//North
+	glm::ivec3(1,  0,  0),	//East
 	glm::ivec3(-1,  0,  0)	//West
 };
 
 const glm::vec3 normals[6]{
-	glm::vec3( 0,  1,  0),
-	glm::vec3( 0, -1,  0),
-	glm::vec3( 0,  0,  1),
-	glm::vec3( 0,  0, -1),
-	glm::vec3( 1,  0,  0),
+	glm::vec3(0,  1,  0),
+	glm::vec3(0, -1,  0),
+	glm::vec3(0,  0,  1),
+	glm::vec3(0,  0, -1),
+	glm::vec3(1,  0,  0),
 	glm::vec3(-1,  0,  0)
 };
 
 const glm::vec3 normalizedVertices[8] =
 {
 	glm::vec3(-0.5f, -0.5f,  0.5f),
-	glm::vec3( 0.5f, -0.5f,  0.5f),
+	glm::vec3(0.5f, -0.5f,  0.5f),
 	glm::vec3(-0.5f,  0.5f,  0.5f),
-	glm::vec3( 0.5f,  0.5f,  0.5f),
+	glm::vec3(0.5f,  0.5f,  0.5f),
 	glm::vec3(-0.5f, -0.5f, -0.5f),
-	glm::vec3( 0.5f, -0.5f, -0.5f),
+	glm::vec3(0.5f, -0.5f, -0.5f),
 	glm::vec3(-0.5f,  0.5f, -0.5f),
-	glm::vec3( 0.5f,  0.5f, -0.5f)
+	glm::vec3(0.5f,  0.5f, -0.5f)
 };
 
 const glm::ivec4 quads[6] =
@@ -43,30 +43,33 @@ const glm::ivec4 quads[6] =
 	glm::ivec4(0, 4, 2, 6)	//West
 };
 
-Block currentBlockType;
-
 Chunk::Chunk(glm::vec2 offset)
 	:mesh(vertices, indices), m_Offset(glm::vec3(offset.x * xSize, 0, offset.y * zSize))
 {
-	mesh.Update(vertices, indices);
+	//std::cout << "startCopy?" << std::endl;
 
-	float startTime = glfwGetTime();
+	//mesh.Update(vertices, indices);
+
+	//float startTime = glfwGetTime();
 
 	InitVoxelData();
+	//std::cout << "afterInit" << std::endl;
 
-	float midTime = glfwGetTime();
-	float initTime = midTime - startTime;
+	//float midTime = glfwGetTime();
+	//float initTime = midTime - startTime;
 
 	GenerateMesh();
-	float endTime = glfwGetTime();
+	//float endTime = glfwGetTime();
 
-	float meshTime = endTime - midTime;
+	//float meshTime = endTime - midTime;
 
-	float totalTime = endTime - startTime;
+	//float totalTime = endTime - startTime;
 
-	std::cout << "InitTime: " << initTime << std::endl;
-	std::cout << "MeshTime: " << meshTime << std::endl;
-	std::cout << "TotalTime: " << totalTime << std::endl;
+	//std::cout << "InitTime: " << initTime << std::endl;
+	//std::cout << "MeshTime: " << meshTime << std::endl;
+	//std::cout << "TotalTime: " << totalTime << std::endl;
+	//std::cout << "vertices size: " << vertices.size() << std::endl;
+	//std::cout << "indices size: " << indices.size() << std::endl;
 
 	//std::cout << indices.size() << std::endl;
 	//std::cout << vertices.size() << std::endl;
@@ -77,7 +80,7 @@ Chunk::Chunk(glm::vec2 offset)
 
 Chunk::~Chunk()
 {
-	//delete[] chunk;
+	//delete &mesh;
 }
 
 
@@ -114,26 +117,38 @@ void Chunk::GenerateMesh()
 {
 	vertices.clear();
 	indices.clear();
+	//std::cout << "inside generate mesh" << std::endl;
+	vertices.reserve(25000);
+	indices.reserve(35000);
+	//float startTime = glfwGetTime();
+
+
 	for (unsigned int x = 0; x < xSize; x++)
 	{
 		for (unsigned int z = 0; z < zSize; z++)
 		{
 			for (unsigned int y = 0; y < ySize; y++)
 			{
-				currentBlockType = static_cast<Block>(GetCell(x, y, z));
-
-				if (currentBlockType == AIR)
+				if (static_cast<Block>(GetCell(x, y, z)) == AIR)
 					continue;
 
-				MakeCube(glm::ivec3(x, y, z));
+				glm::vec3 pos = glm::vec3(x, y, z);
+				MakeCube(pos);
 			}
 		}
 	}
 
+	//float midTime = glfwGetTime();
+	//std::cout << "generateMeshTime " << midTime - startTime << std::endl;
+
+
 	mesh.Update(vertices, indices);
+	//float endTime = glfwGetTime();
+	//std::cout << "updateMeshTime " << endTime - midTime << std::endl;
+
 }
 
-void Chunk::MakeCube(glm::ivec3 position)
+void Chunk::MakeCube(glm::vec3 &position)
 {
 	for (int i = 0; i < 6; i++)
 	{
@@ -142,57 +157,42 @@ void Chunk::MakeCube(glm::ivec3 position)
 	}
 }
 
-void Chunk::MakeFace(int dir, glm::vec3 position)
+void Chunk::MakeFace(int &dir, glm::vec3 &position)
 {
+	//std::cout << "start inside makeFace" << std::endl;
 	int nVertices = vertices.size();
 	//Vertex* faceVertices = GetFaceVertices(dir, position);
 	//vertices.insert(vertices.end(), faceVertices, faceVertices + 4);
+
 	GetFaceVertices(dir, position);
-	indices.push_back(nVertices);
-	indices.push_back(nVertices + 2);
-	indices.push_back(nVertices + 1);
-	indices.push_back(nVertices + 2);
-	indices.push_back(nVertices + 3);
-	indices.push_back(nVertices + 1);
+	//std::cout << "mid inside makeFace" << std::endl;
+	indices.emplace_back(nVertices);
+	indices.emplace_back(nVertices + 2);
+	indices.emplace_back(nVertices + 1);
+	indices.emplace_back(nVertices + 2);
+	indices.emplace_back(nVertices + 3);
+	indices.emplace_back(nVertices + 1);
 }
 
-void Chunk::GetFaceVertices(int dir, glm::vec3 position)
+void Chunk::GetFaceVertices(int &dir, glm::vec3 &position)
 {
 	glm::vec3 color = GetColor(static_cast<Block>(GetCell(position.x, position.y, position.z)));
-
-	Vertex vertex1(
+	vertices.emplace_back(
 		normalizedVertices[quads[dir].x] + position + m_Offset,
-		normals[dir],							 
-		color							 
-	);									 
-	Vertex vertex2(						 
+		normals[dir],
+		color);
+	vertices.emplace_back(
 		normalizedVertices[quads[dir].y] + position + m_Offset,
 		normals[dir],
-		color							 
-	);									 
-	Vertex vertex3(						 
+		color);
+	vertices.emplace_back(
 		normalizedVertices[quads[dir].z] + position + m_Offset,
 		normals[dir],
-		color							 
-	);									 
-	Vertex vertex4(						 
+		color);
+	vertices.emplace_back(
 		normalizedVertices[quads[dir].w] + position + m_Offset,
 		normals[dir],
-		color
-		);
-
-	vertices.push_back(vertex1);
-	vertices.push_back(vertex2);
-	vertices.push_back(vertex3);
-	vertices.push_back(vertex4);
-
-	/*std::cout << faceVetices[0].Position.x << " " << faceVetices[0].Position.y << " " << faceVetices[0].Position.z << std::endl;
-	std::cout << faceVetices[1].Position.x << " " << faceVetices[1].Position.y << " " << faceVetices[1].Position.z << std::endl;
-	std::cout << faceVetices[2].Position.x << " " << faceVetices[2].Position.y << " " << faceVetices[2].Position.z << std::endl;
-	std::cout << faceVetices[3].Position.x << " " << faceVetices[3].Position.y << " " << faceVetices[3].Position.z << std::endl;*/
-
-
-//	return faceVetices;
+		color);
 }
 
 glm::vec3 Chunk::GetColor(Block block) const
@@ -219,16 +219,7 @@ void Chunk::InitVoxelData()
 
 			for (unsigned int y = 0; y <= height; y++)
 			{
-				//if (y > height)
-				//{
-				//	chunk[x][y][z] = AIR;
-				//}
-				//else
-				//{
-					chunk[x][y][z] = GRASS;
-
-					//*(chunk + x * ySize * zSize + y * zSize + z) = GRASS;
-				//}
+				chunk[x][y][z] = GRASS;
 			}
 		}
 	}

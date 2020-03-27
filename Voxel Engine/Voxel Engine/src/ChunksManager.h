@@ -19,7 +19,7 @@ struct KeyFuncs
 	}
 };
 
-typedef std::unordered_map<glm::ivec2, Chunk*, KeyFuncs, KeyFuncs> MyMap;
+typedef std::unordered_map<glm::ivec2, std::unique_ptr<Chunk>, KeyFuncs, KeyFuncs> MyMap;
 
 class ChunksManager
 {

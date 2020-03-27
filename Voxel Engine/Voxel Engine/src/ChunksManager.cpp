@@ -9,12 +9,6 @@ ChunksManager::ChunksManager()
 
 ChunksManager::~ChunksManager()
 {
-	//MyMap::iterator itr;
-	//for (itr = chunks.begin(); itr != chunks.end(); ++itr)
-	//{
-	//	chunks.erase(itr->first);
-	//	delete &itr->second;
-	//}
 }
 
 void ChunksManager::Update(glm::vec3 playerPos)
@@ -33,24 +27,20 @@ void ChunksManager::Update(glm::vec3 playerPos)
 			else
 			{
 				visibleChunks.push_back(chunkCoord);
-				chunks.insert(std::pair<glm::ivec2, Chunk*>(chunkCoord, new Chunk(chunkCoord)));
+				chunks.insert(std::pair<glm::ivec2, std::unique_ptr<Chunk>>(chunkCoord, new Chunk(chunkCoord)));
 			}
 		}
 	}
 
-	//std::list<glm::ivec2>::iterator it;
-	//for (it = visibleChunks.begin(); it != visibleChunks.end(); ++it)
-	//{
-	//	if (it->x > chunksVisibleInViewDist || it->x < -chunksVisibleInViewDist
-	//		|| it->y > chunksVisibleInViewDist || it->x < -chunksVisibleInViewDist)
-	//	{
-	//		void* chunk = &chunks.find(*it);
-	//		delete chunk;
-
-	//		chunks.erase(*it);
-	//		visibleChunks.remove(*it);
-	//	}
-	//}
+	for (auto it = visibleChunks.begin(); it != visibleChunks.end(); it++)
+	{
+		if (it->x > playerChunkCoord.x + chunksVisibleInViewDist + 1 || it->x < playerChunkCoord.x - chunksVisibleInViewDist - 1 ||
+			it->y > playerChunkCoord.y + chunksVisibleInViewDist + 1 || it->y < playerChunkCoord.y - chunksVisibleInViewDist - 1)
+		{
+			chunks.erase(*it);
+			visibleChunks.erase(it--);
+		}
+	}
 
 
 	RenderChunks(playerChunkCoord);
@@ -59,11 +49,8 @@ void ChunksManager::Update(glm::vec3 playerPos)
 void ChunksManager::RenderChunks(glm::vec2 playerCoord)
 {
 	MyMap::iterator itr;
-	//std::cout << "viewdist  " << playerCoord.x << std::endl;
-
 	for (itr = chunks.begin(); itr != chunks.end(); ++itr)
 	{
-		//std::cout << itr->first.x << std::endl;
 		if (itr->first.x <= playerChunkCoord.x + chunksVisibleInViewDist && itr->first.x >= playerChunkCoord.x - chunksVisibleInViewDist
 			&& itr->first.y <= playerChunkCoord.y + chunksVisibleInViewDist && itr->first.y >= playerChunkCoord .y - chunksVisibleInViewDist)
 		{
