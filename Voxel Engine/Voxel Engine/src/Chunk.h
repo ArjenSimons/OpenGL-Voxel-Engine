@@ -2,6 +2,8 @@
 #include "glm/glm.hpp"
 #include "mesh.h"
 #include <vector>
+#include <map>
+#include <unordered_map>
 
 enum Direction
 {
@@ -31,20 +33,23 @@ public:
 	static const unsigned int zSize = 32;
 private:
 	glm::vec3 m_Offset;
-
+	
 	static const unsigned int amplitude = 10;
 	static const unsigned int frequency = 20;
 	unsigned char chunk[xSize][ySize][zSize];
 
 	std::vector<Vertex> vertices{ vert };
 	std::vector<unsigned int> indices{ 1 };
+
+	Chunk* neighborChunks[4];
 public:
 	Chunk(glm::vec2 offset);
 	~Chunk();
 	Mesh mesh;
 
 	unsigned char GetCell(int x, int y, int z) const;
-	unsigned char GetNeighbor(int x, int y, int z, Direction dir) const;
+	unsigned char GetNeighborVoxel(int x, int y, int z, Direction dir) const;
+	void SetNeighborChunks(Chunk* north, Chunk* south, Chunk* east, Chunk* west);
 private:
 	bool CellIsInMap(glm::ivec3 position) const;
 	void GenerateMesh();
