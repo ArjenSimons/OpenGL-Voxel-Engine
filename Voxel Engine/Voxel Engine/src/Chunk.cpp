@@ -92,9 +92,16 @@ unsigned char Chunk::GetCell(int x, int y, int z) const
 unsigned char Chunk::GetNeighbor(int x, int y, int z, Direction dir) const
 {
 	glm::ivec3 neighborPos = glm::ivec3(x, y, z) + directionOffset[dir];
+	
 
 	if (CellIsInMap(neighborPos))
 		return GetCell(neighborPos.x, neighborPos.y, neighborPos.z);
+
+	float height = 0;
+	height = (ySize - amplitude) + glm::perlin(glm::vec2((m_Offset.x + neighborPos.x) / (float)frequency, (m_Offset.z + neighborPos.z) / (float)frequency)) * amplitude;
+
+	if (y < height && y > 0)
+		return 1;
 
 	return 0;
 }
