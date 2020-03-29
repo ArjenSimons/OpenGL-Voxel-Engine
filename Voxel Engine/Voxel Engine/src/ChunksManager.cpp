@@ -35,9 +35,14 @@ void ChunksManager::Update(glm::vec3 playerPos)
 			it->y > playerChunkCoord.y + chunksVisibleInViewDist + 1 || it->y < playerChunkCoord.y - chunksVisibleInViewDist - 1)
 		{
 			chunks.erase(*it);
-			visibleChunks.erase(it--);
+
+			if (it != visibleChunks.begin())
+				visibleChunks.erase(it--);
+			else
+				visibleChunks.erase(it++);
 		}
 	}
+
 
 	RenderChunks(playerChunkCoord);
 }
@@ -48,7 +53,7 @@ void ChunksManager::RenderChunks(glm::vec2 playerCoord)
 	for (itr = chunks.begin(); itr != chunks.end(); ++itr)
 	{
 		if (itr->first.x <= playerChunkCoord.x + chunksVisibleInViewDist && itr->first.x >= playerChunkCoord.x - chunksVisibleInViewDist
-			&& itr->first.y <= playerChunkCoord.y + chunksVisibleInViewDist && itr->first.y >= playerChunkCoord .y - chunksVisibleInViewDist)
+			&& itr->first.y <= playerChunkCoord.y + chunksVisibleInViewDist && itr->first.y >= playerChunkCoord.y - chunksVisibleInViewDist)
 		{
 			itr->second->mesh.Draw();
 		}

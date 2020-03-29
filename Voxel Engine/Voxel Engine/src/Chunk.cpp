@@ -89,43 +89,21 @@ unsigned char Chunk::GetCell(int x, int y, int z) const
 	return chunk[x][y][z];//*(chunk + x * ySize * zSize + y * zSize + z);
 }
 
-unsigned char Chunk::GetNeighborVoxel(int x, int y, int z, Direction dir) const
+unsigned char Chunk::GetNeighbor(int x, int y, int z, Direction dir) const
 {
 	glm::ivec3 neighborPos = glm::ivec3(x, y, z) + directionOffset[dir];
+	
 
-	if (neighborPos.x < 0)
-		if (neighborChunks[2] == nullptr)
-			return 0;
-		else
-			return neighborChunks[2]->GetNeighborVoxel(xSize - 1, y, z, EAST);
-	else if (neighborPos.x >= xSize)
-		if (neighborChunks[3] == nullptr)
-			return 0;
-		else
-			return neighborChunks[3]->GetNeighborVoxel(0, y, z, WEST);
-	else if (neighborPos.z < 0)
-		if (neighborChunks[1] == nullptr)
-			return 0;
-		else
-			return neighborChunks[1]->GetNeighborVoxel(zSize - 1, y, z, SOUTH);
-	else if (neighborPos.z >= zSize)
-		if (neighborChunks[0] == nullptr)
-			return 0;
-		else
-			return neighborChunks[0]->GetNeighborVoxel(0, y, z, NORTH);
-	else if (neighborPos.y >= ySize || neighborPos.y < 0)
-		return 0;
+	if (CellIsInMap(neighborPos))
+		return GetCell(neighborPos.x, neighborPos.y, neighborPos.z);
 
-	//if (CellIsInMap(neighborPos))
-	return GetCell(neighborPos.x, neighborPos.y, neighborPos.z);
-}
+	float height = 0;
+	height = (ySize - amplitude) + glm::perlin(glm::vec2((m_Offset.x + neighborPos.x) / (float)frequency, (m_Offset.z + neighborPos.z) / (float)frequency)) * amplitude;
 
-void Chunk::SetNeighborChunks(Chunk * north, Chunk * south, Chunk * east, Chunk * west)
-{
-	neighborChunks[0] = north;
-	neighborChunks[1] = south;
-	neighborChunks[2] = east;
-	neighborChunks[3] = west;
+	if (y < height && y > 0)
+		return 1;
+
+	return 0;
 }
 
 bool Chunk::CellIsInMap(glm::ivec3 position) const
@@ -181,7 +159,7 @@ void Chunk::MakeCube(glm::vec3 &position)
 {
 	for (int i = 0; i < 6; i++)
 	{
-		if (GetNeighborVoxel(position.x, position.y, position.z, static_cast<Direction>(i)) == AIR)
+		if (GetNeighbor(position.x, position.y, position.z, static_cast<Direction>(i)) == AIR)
 			MakeFace(i, position);
 	}
 }
