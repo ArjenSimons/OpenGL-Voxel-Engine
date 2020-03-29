@@ -21,7 +21,10 @@ void ChunksManager::Update(glm::vec3 playerPos)
 		for (int xOffset = -chunksVisibleInViewDist; xOffset <= chunksVisibleInViewDist; xOffset++)
 		{
 			glm::ivec2 chunkCoord = glm::ivec2(xOffset + playerChunkCoord.x, zOffset + playerChunkCoord.y);
-			if (chunks.count(chunkCoord) != 1)
+			if (chunks.count(chunkCoord) == 1)
+			{
+			}
+			else
 			{
 				visibleChunks.push_back(chunkCoord);
 				chunks.insert(std::pair<glm::ivec2, std::unique_ptr<Chunk>>(chunkCoord, new Chunk(chunkCoord)));
@@ -38,6 +41,7 @@ void ChunksManager::Update(glm::vec3 playerPos)
 			visibleChunks.erase(it--);
 		}
 	}
+
 
 	RenderChunks(playerChunkCoord);
 }
