@@ -2,6 +2,7 @@
 #include "glm/glm.hpp"
 #include "mesh.h"
 #include <vector>
+#include <future>
 
 enum Direction
 {
@@ -26,9 +27,9 @@ static Vertex vert;
 class Chunk
 {
 public:
-	static const unsigned int xSize = 32;
-	static const unsigned int ySize = 32;
-	static const unsigned int zSize = 32;
+	static const unsigned int xSize = 64;
+	static const unsigned int ySize = 64;
+	static const unsigned int zSize = 64;
 private:
 	glm::vec3 m_Offset;
 
@@ -38,15 +39,22 @@ private:
 
 	std::vector<Vertex> vertices{ vert };
 	std::vector<unsigned int> indices{ 1 };
+	
+	std::vector<std::future<void>> m_Futures;
+	bool dataRetreived = false;
 public:
 	Chunk(glm::vec2 offset);
 	~Chunk();
 	Mesh mesh;
 
+	void Update();
 	unsigned char GetCell(int x, int y, int z) const;
 	unsigned char GetNeighbor(int x, int y, int z, Direction dir) const;
 private:
 	bool CellIsInMap(glm::ivec3 position) const;
+	void RequestMeshData();
+	void MeshDataThread();
+	void OnMeshDataReceived();
 	void GenerateMesh();
 	void MakeCube(glm::vec3 &position);
 	void MakeFace(int &dir, glm::vec3 &position);

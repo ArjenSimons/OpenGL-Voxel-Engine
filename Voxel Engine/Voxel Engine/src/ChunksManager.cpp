@@ -55,7 +55,7 @@ void ChunksManager::RenderChunks(glm::vec2 playerCoord)
 		if (itr->first.x <= playerChunkCoord.x + chunksVisibleInViewDist && itr->first.x >= playerChunkCoord.x - chunksVisibleInViewDist
 			&& itr->first.y <= playerChunkCoord.y + chunksVisibleInViewDist && itr->first.y >= playerChunkCoord.y - chunksVisibleInViewDist)
 		{
-			itr->second->mesh.Draw();
+			itr->second->Update();
 		}
 	}
 }
