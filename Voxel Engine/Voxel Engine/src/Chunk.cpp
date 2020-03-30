@@ -86,7 +86,7 @@ Chunk::~Chunk()
 
 void Chunk::Update()
 {
-	if (dataRetreived = true)
+	if (dataRetreived)
 	{
 		OnMeshDataReceived();
 		dataRetreived = false;
@@ -132,8 +132,8 @@ bool Chunk::CellIsInMap(glm::ivec3 position) const
 static std::mutex mutex;
 void Chunk::RequestMeshData()
 {
-	//m_Futures.push_back(std::async(std::launch::async, [this] { this->MeshDataThread(); }));
-	std::async(std::launch::async, [this] { this->MeshDataThread(); });
+	m_Futures.push_back(std::async(std::launch::async, [this] { this->MeshDataThread(); }));
+	//std::async(std::launch::async, [this] { this->MeshDataThread(); });
 }
 
 
