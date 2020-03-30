@@ -2,7 +2,6 @@
 #include <iostream>
 #include "glm/gtc/noise.hpp"
 #include <GLFW/glfw3.h>
-#include <deque>
 
 const glm::ivec3 directionOffset[6]{
 	glm::ivec3(0,  1,  0),	//Up
@@ -43,10 +42,6 @@ const glm::ivec4 quads[6] =
 	glm::ivec4(5, 1, 7, 3),	//East
 	glm::ivec4(0, 4, 2, 6)	//West
 };
-
-std::deque<std::packaged_task<void()>> tasks;
-std::mutex tasks_mutex;
-std::atomic<bool> gui_running;
 
 Chunk::Chunk(glm::vec2 offset)
 	:mesh(vertices, indices), m_Offset(glm::vec3(offset.x * xSize, 0, offset.y * zSize))
@@ -91,20 +86,11 @@ Chunk::~Chunk()
 
 void Chunk::Update()
 {
-	//while (gui_running)
-	//{
-		std::unique_lock<std::mutex> lock(tasks_mutex);
-		while (!tasks.empty())
-		{
-			std::cout << "taks not empty..." << std::endl;
-			auto task(std::move(tasks.front()));
-			tasks.pop_front();
-
-			lock.unlock();
-			task();
-			lock.lock();
-		}
-	//}
+	if (dataRetreived = true)
+	{
+		OnMeshDataReceived();
+		dataRetreived = false;
+	}
 
 	mesh.Draw();
 }
@@ -143,7 +129,7 @@ bool Chunk::CellIsInMap(glm::ivec3 position) const
 	}
 	return true;
 }
-
+static std::mutex mutex;
 void Chunk::RequestMeshData()
 {
 	//m_Futures.push_back(std::async(std::launch::async, [this] { this->MeshDataThread(); }));
@@ -153,17 +139,11 @@ void Chunk::RequestMeshData()
 
 void Chunk::MeshDataThread()
 {
-	std::packaged_task<void()> task([this] { this->MeshDataThread(); });
-	std::future<void> result = task.get_future();
-
-	{
-		std::lock_guard<std::mutex> lock(tasks_mutex);
-		tasks.push_back(std::move(task));
-	}
+	std::lock_guard<std::mutex> lock(mutex);
 	InitVoxelData();
 	GenerateMesh();
 
-	//result.get();
+	dataRetreived = true;
 }
 
 void Chunk::OnMeshDataReceived()
