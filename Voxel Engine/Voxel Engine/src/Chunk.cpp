@@ -52,13 +52,14 @@ Chunk::Chunk(glm::vec2 offset)
 
 	//float startTime = glfwGetTime();
 
-	InitVoxelData();
+	RequestMeshData();
+	//InitVoxelData();
 	//std::cout << "afterInit" << std::endl;
 
 	//float midTime = glfwGetTime();
 	//float initTime = midTime - startTime;
 
-	GenerateMesh();
+	//GenerateMesh();
 	//float endTime = glfwGetTime();
 
 	//float meshTime = endTime - midTime;
@@ -80,9 +81,22 @@ Chunk::Chunk(glm::vec2 offset)
 
 Chunk::~Chunk()
 {
-	//delete &mesh;
 }
 
+
+void Chunk::Update()
+{
+	if (dataRetreived)
+	{
+		std::cout << "meshdatareceived" << std::endl;
+		OnMeshDataReceived();
+		dataRetreived = false;
+	}
+	else
+	{
+		mesh.Draw();
+	}
+}
 
 unsigned char Chunk::GetCell(int x, int y, int z) const
 {
@@ -96,7 +110,13 @@ unsigned char Chunk::GetNeighbor(int x, int y, int z, Direction dir) const
 	if (CellIsInMap(neighborPos))
 		return GetCell(neighborPos.x, neighborPos.y, neighborPos.z);
 
-	return 0;
+	float height = 0;
+	height = (ySize - amplitude) + glm::perlin(glm::vec2((m_Offset.x + neighborPos.x) / (float)frequency, (m_Offset.z + neighborPos.z) / (float)frequency)) * amplitude;
+
+	if (y > height || (y <= 0 && dir == DOWN))
+		return 0;
+
+	return 1;
 }
 
 bool Chunk::CellIsInMap(glm::ivec3 position) const
@@ -112,14 +132,40 @@ bool Chunk::CellIsInMap(glm::ivec3 position) const
 	}
 	return true;
 }
+static std::mutex mutex;
+void Chunk::RequestMeshData()
+{
+	m_Futures.push_back(std::async(std::launch::async, [this] { this->MeshDataThread(); }));
+	//std::async(std::launch::async, [this] { this->MeshDataThread(); });
+}
+
+
+void Chunk::MeshDataThread()
+{
+	std::lock_guard<std::mutex> lock(mutex);
+	InitVoxelData();
+	GenerateMesh();
+
+	dataRetreived = true;
+}
+
+void Chunk::OnMeshDataReceived()
+{
+	float startTime = glfwGetTime();
+
+	mesh.Update(vertices, indices);
+
+	float endTime = glfwGetTime();
+	std::cout << "updateMeshTime " << endTime - startTime << std::endl;
+}
 
 void Chunk::GenerateMesh()
 {
 	vertices.clear();
 	indices.clear();
 	//std::cout << "inside generate mesh" << std::endl;
-	vertices.reserve(25000);
-	indices.reserve(35000);
+	vertices.reserve(27000);
+	indices.reserve(37000);
 	//float startTime = glfwGetTime();
 
 
@@ -142,7 +188,6 @@ void Chunk::GenerateMesh()
 	//std::cout << "generateMeshTime " << midTime - startTime << std::endl;
 
 
-	mesh.Update(vertices, indices);
 	//float endTime = glfwGetTime();
 	//std::cout << "updateMeshTime " << endTime - midTime << std::endl;
 
@@ -152,6 +197,8 @@ void Chunk::MakeCube(glm::vec3 &position)
 {
 	for (int i = 0; i < 6; i++)
 	{
+		//if (static_cast<Direction>(i) != AIR && static_cast<Direction>(i) != GRASS)
+		//	std::cout << static_cast<Direction>(i) << std::endl;
 		if (GetNeighbor(position.x, position.y, position.z, static_cast<Direction>(i)) == AIR)
 			MakeFace(i, position);
 	}
@@ -200,7 +247,7 @@ glm::vec3 Chunk::GetColor(Block block) const
 	switch (block)
 	{
 	case (GRASS):
-		return glm::vec3(226, 200, 147);
+		return glm::vec3(0.9f, 0.8f, 0.5f);
 		break;
 	default:
 		return glm::vec3(0, 0, 1);
@@ -209,7 +256,6 @@ glm::vec3 Chunk::GetColor(Block block) const
 
 void Chunk::InitVoxelData()
 {
-
 	float hightOffset = ySize - amplitude;
 	for (unsigned int x = 0; x < xSize; x++)
 	{

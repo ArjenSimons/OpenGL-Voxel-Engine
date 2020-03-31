@@ -21,10 +21,7 @@ void ChunksManager::Update(glm::vec3 playerPos)
 		for (int xOffset = -chunksVisibleInViewDist; xOffset <= chunksVisibleInViewDist; xOffset++)
 		{
 			glm::ivec2 chunkCoord = glm::ivec2(xOffset + playerChunkCoord.x, zOffset + playerChunkCoord.y);
-			if (chunks.count(chunkCoord) == 1)
-			{
-			}
-			else
+			if (chunks.count(chunkCoord) != 1)
 			{
 				visibleChunks.push_back(chunkCoord);
 				chunks.insert(std::pair<glm::ivec2, std::unique_ptr<Chunk>>(chunkCoord, new Chunk(chunkCoord)));
@@ -38,7 +35,11 @@ void ChunksManager::Update(glm::vec3 playerPos)
 			it->y > playerChunkCoord.y + chunksVisibleInViewDist + 1 || it->y < playerChunkCoord.y - chunksVisibleInViewDist - 1)
 		{
 			chunks.erase(*it);
-			visibleChunks.erase(it--);
+
+			if (it != visibleChunks.begin())
+				visibleChunks.erase(it--);
+			else
+				visibleChunks.erase(it++);
 		}
 	}
 
@@ -52,9 +53,9 @@ void ChunksManager::RenderChunks(glm::vec2 playerCoord)
 	for (itr = chunks.begin(); itr != chunks.end(); ++itr)
 	{
 		if (itr->first.x <= playerChunkCoord.x + chunksVisibleInViewDist && itr->first.x >= playerChunkCoord.x - chunksVisibleInViewDist
-			&& itr->first.y <= playerChunkCoord.y + chunksVisibleInViewDist && itr->first.y >= playerChunkCoord .y - chunksVisibleInViewDist)
+			&& itr->first.y <= playerChunkCoord.y + chunksVisibleInViewDist && itr->first.y >= playerChunkCoord.y - chunksVisibleInViewDist)
 		{
-			itr->second->mesh.Draw();
+			itr->second->Update();
 		}
 	}
 }

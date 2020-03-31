@@ -1,10 +1,5 @@
 #include "GL/glew.h"
 #include "Mesh.h"
-#include <glm/glm.hpp>
-#include "Shader.h"
-
-#include <iostream>
-
 
 Mesh::Mesh(const std::vector<Vertex>& vertices , const std::vector<unsigned int>& indices)
 	: m_Vertices(vertices),
