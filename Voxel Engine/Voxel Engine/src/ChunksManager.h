@@ -4,7 +4,6 @@
 #include <map>
 #include <list>
 #include "Chunk.h"
-#include "Shader.h"
 
 struct KeyFuncs
 {

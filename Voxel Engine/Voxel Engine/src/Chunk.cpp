@@ -88,11 +88,14 @@ void Chunk::Update()
 {
 	if (dataRetreived)
 	{
+		std::cout << "meshdatareceived" << std::endl;
 		OnMeshDataReceived();
 		dataRetreived = false;
 	}
-
-	mesh.Draw();
+	else
+	{
+		mesh.Draw();
+	}
 }
 
 unsigned char Chunk::GetCell(int x, int y, int z) const
@@ -148,8 +151,12 @@ void Chunk::MeshDataThread()
 
 void Chunk::OnMeshDataReceived()
 {
-	std::cout << vertices.size() << " " << indices.size() << std::endl;
+	float startTime = glfwGetTime();
+
 	mesh.Update(vertices, indices);
+
+	float endTime = glfwGetTime();
+	std::cout << "updateMeshTime " << endTime - startTime << std::endl;
 }
 
 void Chunk::GenerateMesh()
@@ -249,8 +256,6 @@ glm::vec3 Chunk::GetColor(Block block) const
 
 void Chunk::InitVoxelData()
 {
-	std::cout << m_Offset.x << "  " << m_Offset.y << std::endl;
-
 	float hightOffset = ySize - amplitude;
 	for (unsigned int x = 0; x < xSize; x++)
 	{
