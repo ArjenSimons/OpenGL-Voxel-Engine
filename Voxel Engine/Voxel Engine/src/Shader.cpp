@@ -88,6 +88,15 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 	return id;
 }
 
+unsigned int Shader::SetTexture(const char * attribName, int value)
+{
+	unsigned int uniformLocation = glGetUniformLocation(m_RendererId, attribName);
+
+	glUniform1i(uniformLocation, value);
+
+	return uniformLocation;
+}
+
 unsigned int Shader::SetVec3(const char* attribName, glm::vec3 vector) {
 	unsigned int uniformLocation = glGetUniformLocation(m_RendererId, attribName);
 

@@ -43,6 +43,34 @@ const glm::ivec4 quads[6] =
 	glm::ivec4(0, 4, 2, 6)	//West
 };
 
+const glm::vec2 UVGrassTop[4] = {
+	glm::vec2(0.5f, 0.5f),
+	glm::vec2(1.0f, 0.5f),
+	glm::vec2(0.5f, 1.0f),
+	glm::vec2(1.0f, 1.0f)
+};
+
+const glm::vec2 UVGrassSide[4] = {
+	glm::vec2(0.0f, 0.5f),
+	glm::vec2(0.5f, 0.5f),
+	glm::vec2(0.0f, 1.0f),
+	glm::vec2(0.5f, 1.0f)
+};
+
+const glm::vec2 UVDirt[4] = {
+	glm::vec2(0.0f, 0.0f),
+	glm::vec2(0.5f, 0.0f),
+	glm::vec2(0.0f, 1.0f),
+	glm::vec2(0.5f, 1.0f)
+};
+
+const glm::vec2 UVStone[4] = {
+	glm::vec2(0.5f, 0.0f),
+	glm::vec2(1.0f, 0.0f),
+	glm::vec2(0.5f, 0.5f),
+	glm::vec2(1.0f, 0.5f)
+};
+
 Chunk::Chunk(glm::vec2 offset)
 	:mesh(vertices, indices), m_Offset(glm::vec3(offset.x * xSize, 0, offset.y * zSize))
 {
@@ -60,6 +88,8 @@ Chunk::Chunk(glm::vec2 offset)
 	//float initTime = midTime - startTime;
 
 	//GenerateMesh();
+	//OnMeshDataReceived();
+
 	//float endTime = glfwGetTime();
 
 	//float meshTime = endTime - midTime;
@@ -88,7 +118,6 @@ void Chunk::Update()
 {
 	if (dataRetreived)
 	{
-		std::cout << "meshdatareceived" << std::endl;
 		OnMeshDataReceived();
 		dataRetreived = false;
 	}
@@ -136,7 +165,6 @@ static std::mutex mutex;
 void Chunk::RequestMeshData()
 {
 	m_Futures.push_back(std::async(std::launch::async, [this] { this->MeshDataThread(); }));
-	//std::async(std::launch::async, [this] { this->MeshDataThread(); });
 }
 
 
@@ -223,23 +251,31 @@ void Chunk::MakeFace(int &dir, glm::vec3 &position)
 
 void Chunk::GetFaceVertices(int &dir, glm::vec3 &position)
 {
-	glm::vec3 color = GetColor(static_cast<Block>(GetCell(position.x, position.y, position.z)));
+
+	Block blockType = static_cast<Block>(GetCell(position.x, position.y, position.z));
+	glm::vec3 color = GetColor(blockType);
+	const glm::vec2* uvCoords = GetUVs(blockType, dir);
+
 	vertices.emplace_back(
 		normalizedVertices[quads[dir].x] + position + m_Offset,
 		normals[dir],
-		color);
+		color,
+		uvCoords[0]);
 	vertices.emplace_back(
 		normalizedVertices[quads[dir].y] + position + m_Offset,
 		normals[dir],
-		color);
+		color,
+		uvCoords[1]);
 	vertices.emplace_back(
 		normalizedVertices[quads[dir].z] + position + m_Offset,
 		normals[dir],
-		color);
+		color,
+		uvCoords[2]);
 	vertices.emplace_back(
 		normalizedVertices[quads[dir].w] + position + m_Offset,
 		normals[dir],
-		color);
+		color,
+		uvCoords[3]);
 }
 
 glm::vec3 Chunk::GetColor(Block block) const
@@ -254,6 +290,27 @@ glm::vec3 Chunk::GetColor(Block block) const
 	}
 }
 
+const glm::vec2* Chunk::GetUVs(Block block, int & dir) const
+{
+	switch (block)
+	{
+	case(GRASS):
+		if (dir == UP)
+		{
+			return &UVGrassTop[0];
+		}
+		else return &UVGrassSide[0];
+		break;
+	case(DIRT):
+		return &UVDirt[0];
+		break;
+	case(STONE):
+		return &UVStone[0];
+		break;
+	}
+	return nullptr;
+}
+
 void Chunk::InitVoxelData()
 {
 	float hightOffset = ySize - amplitude;
@@ -265,7 +322,10 @@ void Chunk::InitVoxelData()
 
 			for (unsigned int y = 0; y <= height; y++)
 			{
-				chunk[x][y][z] = GRASS;
+				if (y < ySize - amplitude)
+					chunk[x][y][z] = STONE;
+				else
+					chunk[x][y][z] = GRASS;
 			}
 		}
 	}

@@ -28,7 +28,7 @@ class Chunk
 {
 public:
 	static const unsigned int xSize = 64;
-	static const unsigned int ySize = 64;
+	static const unsigned int ySize = 32;
 	static const unsigned int zSize = 64;
 private:
 	glm::vec3 m_Offset;
@@ -42,10 +42,10 @@ private:
 	
 	std::vector<std::future<void>> m_Futures;
 	bool dataRetreived = false;
+	Mesh mesh;
 public:
 	Chunk(glm::vec2 offset);
 	~Chunk();
-	Mesh mesh;
 
 	void Update();
 	unsigned char GetCell(int x, int y, int z) const;
@@ -60,5 +60,6 @@ private:
 	void MakeFace(int &dir, glm::vec3 &position);
 	void GetFaceVertices(int &dir, glm::vec3 &position);
 	glm::vec3 GetColor(Block block) const;
+	const glm::vec2* GetUVs(Block block, int &dir) const;
 	void InitVoxelData();
 };
