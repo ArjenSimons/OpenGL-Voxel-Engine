@@ -286,7 +286,7 @@ glm::vec3 Chunk::GetColor(Block block) const
 		return glm::vec3(0.9f, 0.8f, 0.5f);
 		break;
 	default:
-		return glm::vec3(0, 0, 1);
+		return glm::vec3(0.9f, 0.8f, 0.5f);
 	}
 }
 
@@ -310,7 +310,6 @@ const glm::vec2* Chunk::GetUVs(Block block, int & dir) const
 		return &UVStone[0];
 		break;
 	}
-	return nullptr;
 }
 
 void Chunk::InitVoxelData()
