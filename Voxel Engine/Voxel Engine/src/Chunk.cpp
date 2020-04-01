@@ -321,6 +321,8 @@ void Chunk::InitVoxelData()
 		for (unsigned int z = 0; z < zSize; z++)
 		{
 			float height = hightOffset + glm::perlin(glm::vec2((m_Offset.x + x) / (float)frequency, (m_Offset.z + z) / (float)frequency)) * amplitude;
+			if (height < 4)
+				std::cout << height << std::endl;
 
 			for (unsigned int y = 0; y <= height; y++)
 			{
