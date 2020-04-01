@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Camera.h"
 #include "ChunksManager.h"
+#include "Texture.h"
 
 int main(void)
 {
@@ -15,6 +16,11 @@ int main(void)
 		ChunksManager chunksManager;
 
 		Shader shader("res/shaders/Basic.shader");
+
+		Texture texture("res/textures/VoxelTexture.png");
+		texture.Bind();
+
+		shader.SetTexture("u_Texture", 0);
 
 		shader.SetVec3("lightDir", glm::vec3(-0.5f, -0.9f, 0.3f));
 

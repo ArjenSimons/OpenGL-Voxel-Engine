@@ -8,12 +8,14 @@
 struct Vertex
 {
 	glm::vec3 Position, Normal, Color;
+	glm::vec2 UVCoord;
 
 	Vertex(
 		glm::vec3 position = glm::vec3(0, 0, 0),
 		glm::vec3 normal = glm::vec3(0, 0, 0),
-		glm::vec3 color = glm::vec3(0, 0, 0))
-		: Position(position), Normal(normal), Color(color)
+		glm::vec3 color = glm::vec3(0, 0, 0),
+		glm::vec2 textCoord = glm::vec2(0, 0))
+		: Position(position), Normal(normal), Color(color), UVCoord(textCoord)
 	{
 	}
 
