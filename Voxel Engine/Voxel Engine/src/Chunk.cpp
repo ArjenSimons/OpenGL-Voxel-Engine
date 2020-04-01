@@ -299,6 +299,8 @@ const glm::vec2* Chunk::GetUVs(Block block, int & dir) const
 		{
 			return &UVGrassTop[0];
 		}
+		else if (dir == DOWN)
+			return &UVDirt[0];
 		else return &UVGrassSide[0];
 		break;
 	case(DIRT):
