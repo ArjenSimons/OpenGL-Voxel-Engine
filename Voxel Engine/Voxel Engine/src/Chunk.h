@@ -27,9 +27,9 @@ static Vertex vert;
 class Chunk
 {
 public:
-	static const unsigned int xSize = 64;
+	static const unsigned int xSize = 32;
 	static const unsigned int ySize = 32;
-	static const unsigned int zSize = 64;
+	static const unsigned int zSize = 32;
 private:
 	glm::vec3 m_Offset;
 

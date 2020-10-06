@@ -72,41 +72,9 @@ const glm::vec2 UVStone[4] = {
 };
 
 Chunk::Chunk(glm::vec2 offset)
-	:mesh(vertices, indices), m_Offset(glm::vec3(offset.x * xSize, 0, offset.y * zSize))
+	:mesh(vertices, indices), m_Offset(glm::vec3(offset.x * (xSize - 4), 0, offset.y * zSize))
 {
-	//std::cout << "startCopy?" << std::endl;
-
-	//mesh.Update(vertices, indices);
-
-	//float startTime = glfwGetTime();
-
 	RequestMeshData();
-	//InitVoxelData();
-	//std::cout << "afterInit" << std::endl;
-
-	//float midTime = glfwGetTime();
-	//float initTime = midTime - startTime;
-
-	//GenerateMesh();
-	//OnMeshDataReceived();
-
-	//float endTime = glfwGetTime();
-
-	//float meshTime = endTime - midTime;
-
-	//float totalTime = endTime - startTime;
-
-	//std::cout << "InitTime: " << initTime << std::endl;
-	//std::cout << "MeshTime: " << meshTime << std::endl;
-	//std::cout << "TotalTime: " << totalTime << std::endl;
-	//std::cout << "vertices size: " << vertices.size() << std::endl;
-	//std::cout << "indices size: " << indices.size() << std::endl;
-
-	//std::cout << indices.size() << std::endl;
-	//std::cout << vertices.size() << std::endl;
-	//std::cout << (int)GetCell(0, 0, 0) << std::endl;
-
-	//std::cout << m_Offset.x << " " << m_Offset.z << std::endl;
 }
 
 Chunk::~Chunk()
@@ -129,7 +97,7 @@ void Chunk::Update()
 
 unsigned char Chunk::GetCell(int x, int y, int z) const
 {
-	return chunk[x][y][z];//*(chunk + x * ySize * zSize + y * zSize + z);
+	return chunk[x][y][z];
 }
 
 unsigned char Chunk::GetNeighbor(int x, int y, int z, Direction dir) const
@@ -191,11 +159,8 @@ void Chunk::GenerateMesh()
 {
 	vertices.clear();
 	indices.clear();
-	//std::cout << "inside generate mesh" << std::endl;
 	vertices.reserve(27000);
 	indices.reserve(37000);
-	//float startTime = glfwGetTime();
-
 
 	for (unsigned int x = 0; x < xSize; x++)
 	{
@@ -211,22 +176,12 @@ void Chunk::GenerateMesh()
 			}
 		}
 	}
-
-	//float midTime = glfwGetTime();
-	//std::cout << "generateMeshTime " << midTime - startTime << std::endl;
-
-
-	//float endTime = glfwGetTime();
-	//std::cout << "updateMeshTime " << endTime - midTime << std::endl;
-
 }
 
 void Chunk::MakeCube(glm::vec3 &position)
 {
 	for (int i = 0; i < 6; i++)
 	{
-		//if (static_cast<Direction>(i) != AIR && static_cast<Direction>(i) != GRASS)
-		//	std::cout << static_cast<Direction>(i) << std::endl;
 		if (GetNeighbor(position.x, position.y, position.z, static_cast<Direction>(i)) == AIR)
 			MakeFace(i, position);
 	}
@@ -234,13 +189,9 @@ void Chunk::MakeCube(glm::vec3 &position)
 
 void Chunk::MakeFace(int &dir, glm::vec3 &position)
 {
-	//std::cout << "start inside makeFace" << std::endl;
 	int nVertices = vertices.size();
-	//Vertex* faceVertices = GetFaceVertices(dir, position);
-	//vertices.insert(vertices.end(), faceVertices, faceVertices + 4);
 
 	GetFaceVertices(dir, position);
-	//std::cout << "mid inside makeFace" << std::endl;
 	indices.emplace_back(nVertices);
 	indices.emplace_back(nVertices + 2);
 	indices.emplace_back(nVertices + 1);
