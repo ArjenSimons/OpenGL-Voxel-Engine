@@ -45,7 +45,6 @@ int main(void)
 
 		while (window.IsRunning())
 		{
-			//rotate cube
 			glm::mat4 mvp = projection * cam.GetViewMatrix() * model;
 			shader.SetMat4("mvp", mvp);
 			shader.SetMat4("model", model);
