@@ -14,6 +14,7 @@ out vec3 fragPos;
 out vec3 objectColor;
 out vec2 uvCoord;
 
+//Maps a value in a range to another range
 float map(float value, float min1, float max1, float min2, float max2)
 {
 	return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
