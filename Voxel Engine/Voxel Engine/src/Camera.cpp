@@ -27,10 +27,12 @@ void Camera::ProcessInput(GLFWwindow* window)
 
 void Camera::CalculatePosition(GLFWwindow* window)
 {
+	//Press shift to move faster
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 		m_CurrentSpeed = m_FastSpeed;
 	else m_CurrentSpeed = m_Speed;
 
+	//Move using WASD keys
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		m_Position += GetSpeed() * m_Front;
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -47,6 +49,7 @@ void Camera::CalculateDirection(GLFWwindow* window)
 	double yPos;
 	glfwGetCursorPos(window, &xPos, &yPos);
 
+	//Set prefious positions to current position if it's the first time this method is called
 	if (firstCursorMovement)
 	{
 		prefXPos = xPos;
@@ -54,6 +57,7 @@ void Camera::CalculateDirection(GLFWwindow* window)
 		firstCursorMovement = false;
 	}
 
+	//Get the amount of mouse movement
 	deltaX = xPos - prefXPos;
 	deltaY = yPos - prefYPos;
 	prefXPos = xPos;
@@ -65,10 +69,12 @@ void Camera::CalculateDirection(GLFWwindow* window)
 	m_Pitch -= deltaY;
 	m_Yaw += deltaX;
 	
+	//Limit the Pitch to prevent the view flipping upside down
 	m_Pitch = glm::clamp(m_Pitch, -89.9f, 89.9f);
 
 	glm::vec3 dir;
 
+	//Calculate the rotation on the x, y and z axis. 
 	dir.x = glm::cos(glm::radians(m_Yaw)) * glm::cos(glm::radians(m_Pitch));
 	dir.y = glm::sin(glm::radians(m_Pitch));
 	dir.z = glm::sin(glm::radians(m_Yaw)) * glm::cos(glm::radians(m_Pitch));
@@ -77,10 +83,12 @@ void Camera::CalculateDirection(GLFWwindow* window)
 
 void Camera::SetTime()
 {
+	//Get the delta time (this is used to make movement framerate independent)
 	m_CurrentFrame = glfwGetTime();
 	m_DeltaTime = m_CurrentFrame - m_LastFrame;
 	m_LastFrame = m_CurrentFrame;
 
+	//Print the frame rate
 	float frameRate;
 	frameRate = 1 / m_DeltaTime;
 	std::cout << frameRate << std::endl;
